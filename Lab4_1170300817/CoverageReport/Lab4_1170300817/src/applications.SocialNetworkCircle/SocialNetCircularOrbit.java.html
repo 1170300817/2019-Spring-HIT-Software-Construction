@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SocialNetCircularOrbit.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.SocialNetworkCircle</a> &gt; <span class="el_source">SocialNetCircularOrbit.java</span></div><h1>SocialNetCircularOrbit.java</h1><pre class="source lang-java linenums">package applications.SocialNetworkCircle;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import circularOrbit.ConcreteCircularOrbit;
+import track.Track;
+
+public class SocialNetCircularOrbit extends ConcreteCircularOrbit&lt;Person, Person&gt; {
+	// Abstraction function:
+	// SocialNetCircularOrbit是一个由多个Track，多个朋友和中心用户组成的对人际关系轨道结构的抽象
+	// 所以AF是SocialNetCircularOrbit到真实的人际关系层级轨道结构的映射
+
+	// Representation invariant:
+	// 轨道不能重名，不能有轨道具有相同半径
+
+	// Safety from rep exposure:
+	// 同父类
+	// 在有必要的时候使用防御性拷贝
+	public SocialNetCircularOrbit() {
+<span class="fc" id="L30">		super();</span>
+<span class="fc" id="L31">	}</span>
+
+	/**
+	 * 重写toString方法
+	 */
+	@Override
+	public String toString() {
+<span class="fc" id="L38">		StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L39">		sb.append(this.getCentralObject().getName() + &quot;的关系网:\n&quot;);</span>
+<span class="fc" id="L40">		List&lt;Track&gt; trackList = this.getSortedTracks();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		for (int i = 0; i &lt; trackList.size(); i++) {</span>
+<span class="fc" id="L42">			Track currentTrack = trackList.get(i);</span>
+<span class="fc" id="L43">			sb.append(currentTrack.getName() + &quot;上有:&quot;);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">			for (Person a : OrbitMap.get(currentTrack)) {</span>
+<span class="fc" id="L45">				sb.append(a.getName() + &quot;\t&quot;);</span>
+			}
+<span class="fc" id="L47">			sb.append(&quot;\n&quot;);</span>
+		}
+<span class="fc" id="L49">		return sb.toString();</span>
+	}
+
+	/**
+	 * 重写drawpicture方法，可视化可以画关系了
+	 */
+	@Override
+	public void drawpicture() {
+<span class="nc" id="L57">		JFrame frame = new JFrame();</span>
+<span class="nc" id="L58">		String TITLE = &quot;可视化&quot;;</span>
+<span class="nc" id="L59">		int WIDTH = 800;</span>
+<span class="nc" id="L60">		int HEIGHT = 800;</span>
+//		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+<span class="nc" id="L62">		JPanel jpanel = new JPanel() {</span>
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void paint(Graphics graphics) {
+<span class="nc" id="L67">				super.paint(graphics);</span>
+<span class="nc" id="L68">				Map&lt;Person, Position&gt; positionMap = new HashMap&lt;Person, Position&gt;();</span>
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">				for (Track t : OrbitMap.keySet()) {</span>
+<span class="nc" id="L71">					int R = (int) t.getRadius();</span>
+<span class="nc" id="L72">					graphics.drawOval(400 - (int) (0.5 * R), 400 - (int) (0.5 * R), R, R);</span>
+<span class="nc" id="L73">					int objectNum = getObjectNumonTrack(t);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">					double angle = objectNum == 0 ? 0 : 360 / objectNum;</span>
+<span class="nc" id="L75">					int i = 1;</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">					for (Person p : getObjectonTrack(t)) {</span>
+<span class="nc" id="L77">						int x = (int) (400 + 0.5 * R * Math.cos(Math.PI * i * angle / 180));</span>
+<span class="nc" id="L78">						int y = (int) (400 + 0.5 * R * Math.sin(Math.PI * i * angle / 180));</span>
+<span class="nc" id="L79">						positionMap.put(p, new Position(x, y));</span>
+//						System.out.println(p.getName()+000+x+000+y);
+<span class="nc" id="L81">						graphics.setColor(Color.BLUE);</span>
+<span class="nc" id="L82">						graphics.drawOval(x - 5, y - 5, 10, 10);</span>
+<span class="nc" id="L83">						graphics.fillOval(x - 5, y - 5, 10, 10);</span>
+<span class="nc" id="L84">						graphics.drawString(p.getName(), x + 5, y);</span>
+<span class="nc" id="L85">						i++;</span>
+<span class="nc" id="L86">						graphics.setColor(Color.BLACK);</span>
+					}
+				}
+<span class="nc" id="L89">				graphics.setColor(Color.RED);</span>
+<span class="nc" id="L90">				graphics.drawOval(400 - 10, 400 - 10, 20, 20);</span>
+<span class="nc" id="L91">				graphics.fillOval(400 - 10, 400 - 10, 20, 20);</span>
+<span class="nc" id="L92">				graphics.setColor(Color.GREEN);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">				for (Person p : getCentralConnectedObject()) {</span>
+<span class="nc" id="L94">					graphics.drawLine(400, 400, positionMap.get(p).getX(), positionMap.get(p).getY());</span>
+				}
+<span class="nc bnc" id="L96" title="All 2 branches missed.">				for (Track t : getSortedTracks()) {</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">					for (Person start : getObjectonTrack(t)) {</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">						for (Person end : trackRelationMap.get(start).keySet()) {</span>
+<span class="nc" id="L99">							graphics.drawLine(positionMap.get(start).getX(), positionMap.get(start).getY(),</span>
+<span class="nc" id="L100">									positionMap.get(end).getX(), positionMap.get(end).getY());</span>
+						}
+					}
+				}
+<span class="nc" id="L104">			}</span>
+		};
+<span class="nc" id="L106">		frame.add(jpanel);</span>
+<span class="nc" id="L107">		frame.setTitle(TITLE);</span>
+<span class="nc" id="L108">		frame.setSize(WIDTH, HEIGHT);</span>
+<span class="nc" id="L109">		frame.setVisible(true);</span>
+<span class="nc" id="L110">	}</span>
+
+	/**
+	 * 重整轨道结构
+	 */
+	public void reArrange() {
+<span class="fc" id="L116">		Map&lt;Track, List&lt;Person&gt;&gt; currentOrbitMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L117">		List&lt;Track&gt; trackList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L118">		Set&lt;Person&gt; finishedPerson = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L119">		Track track1 = new Track(&quot;track0&quot;, 50);</span>
+<span class="fc" id="L120">		currentOrbitMap.put(track1, new ArrayList&lt;Person&gt;());</span>
+<span class="fc" id="L121">		trackList.add(track1);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">		for (Person p : this.getCentralConnectedObject()) {</span>
+<span class="fc" id="L123">			currentOrbitMap.get(track1).add(p);</span>
+<span class="fc" id="L124">			finishedPerson.add(p);</span>
+		}
+<span class="fc" id="L126">		int i = 0;</span>
+<span class="fc" id="L127">		boolean flag = true;</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">		while (flag) {</span>
+<span class="fc" id="L129">			flag = false;</span>
+<span class="fc" id="L130">			i++;</span>
+<span class="fc" id="L131">			Track t = new Track(&quot;track&quot; + i, 50 + 100 * i);</span>
+<span class="fc" id="L132">			Set&lt;Person&gt; temSet = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">			for (Person p : finishedPerson) {</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">				if (this.getTrackConnectedObject(p).size() &gt; 0) {</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">					for (Person peo : trackRelationMap.get(p).keySet()) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">						if (!finishedPerson.contains(peo)) {</span>
+<span class="fc" id="L137">							temSet.add(peo);</span>
+<span class="fc" id="L138">							flag = true;</span>
+						}
+					}
+				}
+			}
+<span class="fc bfc" id="L143" title="All 2 branches covered.">			if (flag) {</span>
+<span class="fc" id="L144">				trackList.add(t);</span>
+<span class="fc" id="L145">				currentOrbitMap.put(t, new ArrayList&lt;Person&gt;());</span>
+<span class="fc" id="L146">				currentOrbitMap.get(t).addAll(temSet);</span>
+<span class="fc" id="L147">				finishedPerson.addAll(temSet);</span>
+			}
+		}
+<span class="fc" id="L150">		OrbitMap.clear();</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">		for (Track t : trackList) {</span>
+<span class="fc" id="L152">			this.addTrack(t);</span>
+		}
+
+<span class="fc bfc" id="L155" title="All 2 branches covered.">		for (Map.Entry&lt;Track, List&lt;Person&gt;&gt; e : currentOrbitMap.entrySet()) {</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">			for (Person object : e.getValue()) {</span>
+<span class="fc" id="L157">				this.addObjectToTrack(e.getKey(), object);</span>
+			}
+		}
+<span class="fc" id="L160">	}</span>
+
+	/**
+	 * 计算亲密度
+	 * 
+	 * @param p 轨道上的人
+	 * @return 亲密度
+	 */
+	public double getIntimacy(Person p) {
+<span class="fc" id="L169">		Track track = this.getSortedTracks().get(0);</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">		if (!OrbitMap.get(track).contains(p)) {</span>
+<span class="nc" id="L171">			System.out.println(&quot;不存在&quot;);</span>
+<span class="nc" id="L172">			return 0;</span>
+		}
+<span class="fc" id="L174">		Double Intimacy = 0.0;</span>
+<span class="fc" id="L175">		Queue&lt;Person&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L176">		Map&lt;Person, Double&gt; intimacyMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L177">		queue.offer(p);</span>
+<span class="fc" id="L178">		intimacyMap.put(p, centralRelationMap.get(p));</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">		while (!queue.isEmpty()) {</span>
+<span class="fc" id="L180">			Person topObject = queue.poll();</span>
+<span class="fc" id="L181">			Double nowDis = intimacyMap.get(topObject);</span>
+<span class="fc" id="L182">			Intimacy += nowDis;</span>
+<span class="fc" id="L183">			Map&lt;Person, Double&gt; friendList = trackRelationMap.get(topObject);</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">			for (Map.Entry&lt;Person, Double&gt; entry : friendList.entrySet())</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">				if (!intimacyMap.containsKey(entry.getKey())) {</span>
+<span class="fc" id="L186">					intimacyMap.put(entry.getKey(), nowDis * entry.getValue());</span>
+<span class="fc" id="L187">					queue.offer(entry.getKey());</span>
+				}
+		}
+<span class="fc" id="L190">		return Intimacy;</span>
+	}
+
+}
+
+/**
+ * @author Administrator 画图功能的辅助类，保存每个点在画板上的位置使用的抽象数据型
+ */
+class Position {
+	private final int x;
+	private final int y;
+
+	public int getX() {
+<span class="nc" id="L203">		return x;</span>
+	}
+
+	public int getY() {
+<span class="nc" id="L207">		return y;</span>
+	}
+
+<span class="nc" id="L210">	public Position(int x, int y) {</span>
+<span class="nc" id="L211">		this.x = x;</span>
+<span class="nc" id="L212">		this.y = y;</span>
+<span class="nc" id="L213">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

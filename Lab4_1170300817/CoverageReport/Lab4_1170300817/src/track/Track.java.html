@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Track.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">track</a> &gt; <span class="el_source">Track.java</span></div><h1>Track.java</h1><pre class="source lang-java linenums">package track;
+
+<span class="pc bpc" id="L3" title="1 of 2 branches missed.">public class Track implements Comparable&lt;Track&gt; {</span>
+	// Abstraction function:
+	// 所以AF是从一个记录着名字和半径的Track抽象数据型到现实轨道的映射
+
+	// Representation invariant:
+	// 轨道半径不能为0，名字不能为空
+
+	// Safety from rep exposure:
+	// 设置关键数据name，radius为private final防止更改
+	// 在有必要的时候使用防御性拷贝
+	private final String name;
+	private final double radius;
+
+	/**
+	 * 构造方法
+	 * 
+	 * @param name   名字
+	 * @param radius 半径
+	 */
+	public Track(String name, double radius) {
+<span class="fc" id="L23">		super();</span>
+<span class="fc" id="L24">		this.name = name;</span>
+<span class="fc" id="L25">		this.radius = radius;</span>
+<span class="fc" id="L26">		checkRep();</span>
+<span class="fc" id="L27">	}</span>
+
+	/**
+	 * 获得轨道名字
+	 * 
+	 * @return
+	 */
+	public String getName() {
+<span class="fc" id="L35">		return name;</span>
+	}
+
+	/**
+	 * 获得轨道半径
+	 * 
+	 * @return
+	 */
+	public double getRadius() {
+<span class="fc" id="L44">		return radius;</span>
+	}
+
+//	private void checkRep() {
+//		assert(this.radius&gt;=0);
+//
+//	}
+
+	/**
+	 * 重写Comparable接口的compareTo方法，
+	 * 
+	 * @return 返回大小比较结果
+	 */
+	@Override
+	public int compareTo(Track o) {
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">		if (this.radius - o.getRadius() == 0) {</span>
+<span class="nc" id="L60">			return 0;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		} else if (this.radius - o.getRadius() &gt; 0) {</span>
+<span class="fc" id="L62">			return 1;</span>
+		} else {
+<span class="fc" id="L64">			return -1;</span>
+		}
+	}
+
+	/**
+	 * 检查名字非空，半径大于0
+	 */
+	public void checkRep() {
+<span class="pc bpc" id="L72" title="2 of 4 branches missed.">		assert (this.name != null);</span>
+<span class="pc bpc" id="L73" title="2 of 4 branches missed.">		assert (this.radius &gt;= 0);</span>
+
+<span class="fc" id="L75">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

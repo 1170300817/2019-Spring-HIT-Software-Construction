@@ -1,0 +1,15 @@
+CentralUser ::= <TommyWong,30,M>
+
+SocialTie ::= <TommyWong, LisaWong, 0.98>
+SocialTie ::= <TommyWong, TomWong, 0.2>
+SocialTie ::= <TomWong, FrankLee, 0.71>
+SocialTie ::= <FrankLee, DavidChen, 0.02>
+SocialTie ::= <TommyWong, DavidChen, 0.342>
+SocialTie ::= <JackMa, PonyMa, 0.999>
+
+Friend ::= <LisaWong, 25, F>
+Friend ::= <TomWong, 61, M>
+Friend ::= <FrankLee, 42, M>
+Friend ::= <DavidChen, 55, M>
+Friend ::= <JackMa, 58, M>
+Friend ::= <PonyMa, 47, M>

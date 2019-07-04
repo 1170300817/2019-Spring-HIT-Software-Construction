@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SocialNetCircularOrbitBuilder.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.SocialNetworkCircle</a> &gt; <span class="el_source">SocialNetCircularOrbitBuilder.java</span></div><h1>SocialNetCircularOrbitBuilder.java</h1><pre class="source lang-java linenums">package applications.SocialNetworkCircle;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import circularOrbit.CircularOrbitBuilder;
+import exception.illegalParameterException;
+import exception.illegalTextGrammarException;
+import exception.sameLabelException;
+import exception.unDefinedPersonException;
+import track.Track;
+
+public class SocialNetCircularOrbitBuilder extends CircularOrbitBuilder&lt;Person, Person&gt; {
+<span class="fc" id="L25">	public List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span>
+
+<span class="fc" id="L27">	public SocialNetCircularOrbitBuilder() {</span>
+<span class="fc" id="L28">		concreteCircularOrbit = new SocialNetCircularOrbit();</span>
+<span class="fc" id="L29">	}</span>
+
+	/**
+	 * 创建具体类型的子类
+	 */
+	@Override
+	public void createCircularOrbit() {
+<span class="fc" id="L36">		concreteCircularOrbit = new SocialNetCircularOrbit();</span>
+<span class="fc" id="L37">	}</span>
+
+	/**
+	 * 从关系网络生成轨道结构
+	 * 
+	 * @param centralObj
+	 * @param personList
+	 * @param keeperList
+	 * @throws unDefinedPersonException
+	 */
+	public void bulidRelations(Person centralObj, List&lt;Person&gt; personList, List&lt;relationKeeper&gt; keeperList)
+			throws unDefinedPersonException {
+
+<span class="fc" id="L50">		Map&lt;Track, List&lt;Person&gt;&gt; OrbitMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L51">		List&lt;Track&gt; trackList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L52">		concreteCircularOrbit.setCentralObject(centralObj);</span>
+
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		for (relationKeeper keeper : keeperList) {</span>
+<span class="fc" id="L55">			Iterator&lt;Person&gt; iterator = personList.iterator();</span>
+<span class="fc" id="L56">			Person p1 = null;</span>
+<span class="fc" id="L57">			Person p2 = null;</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">			while (iterator.hasNext()) {</span>
+<span class="fc" id="L59">				Person person = iterator.next();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">				if (person.getName().equals(keeper.getFromString())) {</span>
+<span class="fc" id="L61">					p1 = person;</span>
+				}
+<span class="fc bfc" id="L63" title="All 2 branches covered.">				if (centralObj.getName().equals(keeper.getFromString())) {</span>
+<span class="fc" id="L64">					p1 = centralObj;</span>
+				}
+<span class="fc bfc" id="L66" title="All 2 branches covered.">				if (person.getName().equals(keeper.getToString())) {</span>
+<span class="fc" id="L67">					p2 = person;</span>
+				}
+			}
+<span class="fc bfc" id="L70" title="All 2 branches covered.">			if (p1 == null) {</span>
+<span class="fc" id="L71">				throw new unDefinedPersonException(&quot;关系中出现未定义的人:&quot; + keeper.getFromString());</span>
+			}
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">			if (p2 == null) {</span>
+<span class="nc" id="L74">				throw new unDefinedPersonException(&quot;关系中出现未定义的人:&quot; + keeper.getToString());</span>
+			}
+<span class="fc bfc" id="L76" title="All 2 branches covered.">			if (p1.getName().equals(centralObj.getName())) {</span>
+<span class="fc" id="L77">				concreteCircularOrbit.addcentralRelation(p2, keeper.getWeight());</span>
+<span class="fc" id="L78">			} else {</span>
+<span class="fc" id="L79">				concreteCircularOrbit.addtrackRelation(p1, p2, keeper.getWeight());</span>
+<span class="fc" id="L80">				concreteCircularOrbit.addtrackRelation(p2, p1, keeper.getWeight());</span>
+			}
+		}
+
+<span class="fc" id="L84">		Set&lt;Person&gt; finishedPerson = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L85">		Track track1 = new Track(&quot;track0&quot;, 50);</span>
+<span class="fc" id="L86">		OrbitMap.put(track1, new ArrayList&lt;Person&gt;());</span>
+<span class="fc" id="L87">		trackList.add(track1);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		for (Person p : concreteCircularOrbit.getCentralConnectedObject()) {</span>
+<span class="fc" id="L89">			OrbitMap.get(track1).add(p);</span>
+<span class="fc" id="L90">			finishedPerson.add(p);</span>
+		}
+<span class="fc" id="L92">		int i = 0;</span>
+<span class="fc" id="L93">		boolean flag = true;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		while (flag) {</span>
+<span class="fc" id="L95">			flag = false;</span>
+<span class="fc" id="L96">			i++;</span>
+<span class="fc" id="L97">			Track t = new Track(&quot;track&quot; + i, 50 + 100 * i);</span>
+<span class="fc" id="L98">			Set&lt;Person&gt; temSet = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">			for (Person p : finishedPerson) {</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">				if (concreteCircularOrbit.getTrackConnectedObject(p).size() &gt; 0) {</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">					for (Person peo : concreteCircularOrbit.getTrackConnectedObject(p)) {</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">						if (!finishedPerson.contains(peo)) {</span>
+<span class="fc" id="L103">							temSet.add(peo);</span>
+<span class="fc" id="L104">							flag = true;</span>
+						}
+					}
+				}
+			}
+<span class="fc bfc" id="L109" title="All 2 branches covered.">			if (flag) {</span>
+<span class="fc" id="L110">				trackList.add(t);</span>
+<span class="fc" id="L111">				OrbitMap.put(t, new ArrayList&lt;Person&gt;());</span>
+<span class="fc" id="L112">				OrbitMap.get(t).addAll(temSet);</span>
+<span class="fc" id="L113">				finishedPerson.addAll(temSet);</span>
+			}
+		}
+<span class="fc" id="L116">		this.bulidTracks(trackList);</span>
+<span class="fc" id="L117">		this.bulidPhysicalObjects(centralObj, OrbitMap);</span>
+<span class="fc" id="L118">	}</span>
+
+	public List&lt;Person&gt; createFromFile(String fileString) throws illegalTextGrammarException, sameLabelException,
+			NumberFormatException, IOException, unDefinedPersonException, illegalParameterException {
+<span class="fc" id="L122">		Person centralUser = null;</span>
+<span class="fc" id="L123">		List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span>
+<span class="fc" id="L124">		List&lt;relationKeeper&gt; keeperList = new ArrayList&lt;relationKeeper&gt;();</span>
+<span class="fc" id="L125">		BufferedReader in = new BufferedReader(new FileReader(new File(fileString)));</span>
+		String fileline;
+<span class="fc" id="L127">		String centralUserPatternString = &quot;CentralUser\\s*::=\\s*&lt;([A-Za-z0-9]+),\\s*(\\d+),\\s*([MF])&gt;&quot;;</span>
+<span class="fc" id="L128">		String friendPatternString = &quot;Friend\\s*::=\\s*&lt;([A-Za-z0-9]+),\\s*(\\d+),\\s*([MF])&gt;&quot;;</span>
+<span class="fc" id="L129">		String socialTiePatternString = &quot;SocialTie\\s*::=\\s*&lt;([A-Za-z0-9]+),\\s*([A-Za-z0-9]+),\\s*(0(?:\\.\\d{1,3})?|1(?:\\.0{1,3})?)&gt;&quot;;</span>
+
+<span class="fc bfc" id="L131" title="All 2 branches covered.">		while ((fileline = in.readLine()) != null) {</span>
+<span class="fc" id="L132">			Matcher centralUserMatcher = Pattern.compile(centralUserPatternString).matcher(fileline);</span>
+<span class="fc" id="L133">			Matcher friendMatcher = Pattern.compile(friendPatternString).matcher(fileline);</span>
+<span class="fc" id="L134">			Matcher socialTieMatcher = Pattern.compile(socialTiePatternString).matcher(fileline);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">			if (centralUserMatcher.find()) {</span>
+<span class="fc" id="L136">				String nameString = centralUserMatcher.group(1);</span>
+<span class="fc" id="L137">				int age = Integer.valueOf(centralUserMatcher.group(2));</span>
+<span class="fc" id="L138">				String gender = centralUserMatcher.group(3);</span>
+<span class="fc" id="L139">				centralUser = Person.getInstance(nameString, age, gender);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">			} else if (friendMatcher.find()) {</span>
+<span class="fc" id="L141">				String nameString = friendMatcher.group(1);</span>
+<span class="fc" id="L142">				int age = Integer.valueOf(friendMatcher.group(2));</span>
+<span class="fc" id="L143">				String gender = friendMatcher.group(3);</span>
+<span class="fc" id="L144">				Person person = Person.getInstance(nameString, age, gender);</span>
+<span class="fc" id="L145">				personList.add(person);</span>
+<span class="fc" id="L146">				this.createCircularOrbit();</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">			} else if (socialTieMatcher.find()) {</span>
+<span class="fc" id="L148">				Double weight = Double.valueOf(socialTieMatcher.group(3));</span>
+<span class="fc" id="L149">				relationKeeper currKeeper = new relationKeeper(socialTieMatcher.group(1), socialTieMatcher.group(2),</span>
+<span class="fc" id="L150">						weight);</span>
+<span class="fc" id="L151">				keeperList.add(currKeeper);</span>
+<span class="fc" id="L152">			} else {</span>
+<span class="fc" id="L153">				analyzeInput(fileline);</span>
+			}
+		}
+<span class="fc" id="L156">		in.close();</span>
+<span class="fc" id="L157">		this.bulidRelations(centralUser, personList, keeperList);</span>
+<span class="fc" id="L158">		return personList;</span>
+
+	}
+
+	public void analyzeInput(String readLine) throws illegalTextGrammarException {
+<span class="fc" id="L163">		String[] arguments = readLine.trim().split(&quot;=&quot;);</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">		if (Pattern.matches(&quot;(CentralUser\\s*::\\s*)&quot;, arguments[0])</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">				|| Pattern.matches(&quot;(Friend\\s*::\\s*)&quot;, arguments[0])) {</span>
+<span class="fc" id="L166">			String[] parameter = arguments[1].split(&quot;,&quot;);</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">			if (parameter.length != 3) {</span>
+<span class="fc" id="L168">				throw new illegalTextGrammarException(readLine + &quot;:人物参数缺失&quot;);</span>
+			}
+<span class="fc bfc" id="L170" title="All 2 branches covered.">			if (!Pattern.matches(&quot;(\\s*&lt;[A-Za-z0-9]+)&quot;, parameter[0])) {</span>
+<span class="fc" id="L171">				throw new illegalTextGrammarException(readLine + &quot;:人物名字错误&quot;);</span>
+			}
+<span class="fc bfc" id="L173" title="All 2 branches covered.">			if (!Pattern.matches(&quot;(\\d+)&quot;, parameter[1])) {</span>
+<span class="fc" id="L174">				throw new illegalTextGrammarException(readLine + &quot;:人物年龄错误&quot;);</span>
+			}
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">			if (!Pattern.matches(&quot;([MF]&gt;)&quot;, parameter[2])) {</span>
+<span class="fc" id="L177">				throw new illegalTextGrammarException(readLine + &quot;:人物性别错误&quot;);</span>
+			}
+<span class="fc bfc" id="L179" title="All 2 branches covered.">		} else if (Pattern.matches(&quot;(SocialTie\\s*::\\s*)&quot;, arguments[0])) {</span>
+<span class="fc" id="L180">			String[] parameter = arguments[1].split(&quot;,&quot;);</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">			if (parameter.length != 3) {</span>
+<span class="fc" id="L182">				throw new illegalTextGrammarException(readLine + &quot;:社交关系参数缺失&quot;);</span>
+			}
+<span class="fc bfc" id="L184" title="All 2 branches covered.">			if (!Pattern.matches(&quot;(\\s*&lt;[A-Za-z0-9]+)&quot;, parameter[0])</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">					|| !Pattern.matches(&quot;(\\s*[A-Za-z0-9]+)&quot;, parameter[1])) {</span>
+<span class="fc" id="L186">				throw new illegalTextGrammarException(readLine + &quot;:社交关系名字错误&quot;);</span>
+			}
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">			if (!Pattern.matches(&quot;(0(?:\\.\\d{1,3})?|1(?:\\.0{1,3})?&gt;)&quot;, parameter[0])) {</span>
+<span class="fc" id="L189">				throw new illegalTextGrammarException(readLine + &quot;:社交关系亲密度错误&quot;);</span>
+			}
+		}
+
+<span class="fc" id="L193">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

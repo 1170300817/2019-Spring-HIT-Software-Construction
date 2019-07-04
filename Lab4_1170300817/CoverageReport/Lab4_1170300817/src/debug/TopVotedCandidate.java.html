@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TopVotedCandidate.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">debug</a> &gt; <span class="el_source">TopVotedCandidate.java</span></div><h1>TopVotedCandidate.java</h1><pre class="source lang-java linenums">/**
+ * In an election, the i-th vote was cast for persons[i] at time times[i].
+ * 
+ * Now, we would like to implement the following query function:
+ * TopVotedCandidate.q(int t) will return the number of the person that was
+ * leading the election at time t.
+ * 
+ * Votes cast at time t will count towards our query. In the case of a tie, the
+ * most recent vote (among tied candidates) wins.
+ * 
+ * 
+ * 
+ * Example 1:
+ * 
+ * Input: [&quot;TopVotedCandidate&quot;,&quot;q&quot;,&quot;q&quot;,&quot;q&quot;,&quot;q&quot;,&quot;q&quot;,&quot;q&quot;],
+ * [[[0,1,1,0,0,1,0],[0,5,10,15,20,25,30]],[3],[12],[25],[15],[24],[8]]
+ *  Output:
+ * [null,0,1,1,0,0,1] 
+ * 
+ * Explanation: 
+ * At time 3, the votes are [0], and 0 is leading. 
+ * At time 12, the votes are [0,1,1], and 1 is leading. 
+ * At time 25, the votes are [0,1,1,0,0,1], and 1 is leading (as ties go to the most recent
+ * vote.) 
+ * This continues for 3 more queries at time 15, 24, and 8.
+ * 
+ * 
+ * Note:
+ * 
+ * 1 &lt;= persons.length = times.length &lt;= 5000 
+ * 0 &lt;= persons[i] &lt;= persons.length
+ * times is a strictly increasing array with all elements in [0, 10^9].
+ * TopVotedCandidate.q is called at most 10000 times per test case.
+ * TopVotedCandidate.q(int t) is always called with t &gt;= times[0].
+ *
+ */
+package debug;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+class TopVotedCandidate {
+	List&lt;List&lt;Vote&gt;&gt; A;
+
+<span class="fc" id="L47">	public TopVotedCandidate(int[] persons, int[] times) {</span>
+<span class="fc" id="L48">		A = new ArrayList&lt;List&lt;Vote&gt;&gt;();</span>
+<span class="fc" id="L49">		Map&lt;Integer, Integer&gt; count = new HashMap&lt;Integer, Integer&gt;();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		for (int i = 0; i &lt; persons.length; ++i) {</span>
+<span class="fc" id="L51">			int p = persons[i], t = times[i];</span>
+//			int c = count.getOrDefault(p, 1); 初始为0，在原来基础上+1
+<span class="fc" id="L53">			int c = count.getOrDefault(p, 0)+1;</span>
+
+<span class="fc" id="L55">			count.put(p, c);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">			while (A.size() &lt;= c)</span>
+<span class="fc" id="L57">				A.add(new ArrayList&lt;Vote&gt;());</span>
+<span class="fc" id="L58">			A.get(c).add(new Vote(p, t));</span>
+		}
+<span class="fc" id="L60">	}</span>
+
+	public int q(int t) {
+<span class="fc" id="L63">		int lo = 1, hi = A.size();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		while (lo &lt; hi) {</span>
+<span class="fc" id="L65">			int mi = lo + (hi - lo) / 2;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">			if (A.get(mi).get(0).time &lt;= t)</span>
+//				lo = mi; 
+<span class="fc" id="L68">				lo = mi+1;</span>
+			else
+<span class="fc" id="L70">				hi = mi;</span>
+		}
+//		int i = lo;
+<span class="fc" id="L73">		int i = lo-1;</span>
+
+<span class="fc" id="L75">		lo = 0;</span>
+<span class="fc" id="L76">		hi = A.get(i).size();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">		while (lo &lt; hi) {</span>
+<span class="fc" id="L78">			int mi = lo + (hi - lo) / 2;</span>
+//			if (A.get(i).get(mi).time &lt; t)
+<span class="fc bfc" id="L80" title="All 2 branches covered.">			if (A.get(i).get(mi).time &lt;= t)//</span>
+<span class="fc" id="L81">				lo = mi + 1;</span>
+			else
+<span class="fc" id="L83">				hi = mi;</span>
+		}
+//		int j = Math.max(lo, 0);
+<span class="fc" id="L86">		int j = Math.max(lo-1, 0);</span>
+<span class="fc" id="L87">		return A.get(i).get(j).person;</span>
+	}
+}
+
+class Vote {
+	int person, time;
+
+<span class="fc" id="L94">	Vote(int p, int t) {</span>
+<span class="fc" id="L95">		person = p;</span>
+<span class="fc" id="L96">		time = t;</span>
+<span class="fc" id="L97">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

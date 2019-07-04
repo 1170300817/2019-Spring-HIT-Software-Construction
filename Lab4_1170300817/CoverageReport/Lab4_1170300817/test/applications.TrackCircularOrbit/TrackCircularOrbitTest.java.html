@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TrackCircularOrbitTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">applications.TrackCircularOrbit</a> &gt; <span class="el_source">TrackCircularOrbitTest.java</span></div><h1>TrackCircularOrbitTest.java</h1><pre class="source lang-java linenums">package applications.TrackCircularOrbit;
+
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import applications.TrackGame.Athlete;
+import applications.TrackGame.TrackCircularOrbit;
+import exception.illegalParameterException;
+import exception.sameLabelException;
+import phsicalObject.PhysicalObject;
+import track.Track;
+
+<span class="fc" id="L14">public class TrackCircularOrbitTest {</span>
+	// Testing strategy:
+	// 补测一些子类方法
+<span class="fc" id="L17">	TrackCircularOrbit orbit = new TrackCircularOrbit();</span>
+<span class="fc" id="L18">	Track t1 = new Track(&quot;track1&quot;, 100);</span>
+<span class="fc" id="L19">	Track t2 = new Track(&quot;track2&quot;, 200);</span>
+<span class="fc" id="L20">	Track t3 = new Track(&quot;track3&quot;, 300);</span>
+	
+
+	@Test
+	public void toStringTest() throws sameLabelException, illegalParameterException {
+<span class="fc" id="L25">		Athlete a1 = Athlete.getInstance(&quot;aa&quot;, 1, &quot;AAA&quot;, 11, 1);</span>
+<span class="fc" id="L26">		Athlete a2 = Athlete.getInstance(&quot;bb&quot;, 2, &quot;AAA&quot;, 11, 2);</span>
+<span class="fc" id="L27">		Athlete a3 = Athlete.getInstance(&quot;cc&quot;, 3, &quot;AAA&quot;, 11, 3);</span>
+<span class="fc" id="L28">		orbit.addTrack(t1);</span>
+<span class="fc" id="L29">		orbit.addTrack(t2);</span>
+<span class="fc" id="L30">		orbit.addTrack(t3);</span>
+<span class="fc" id="L31">		orbit.addObjectToTrack(t1, a1);</span>
+<span class="fc" id="L32">		orbit.addObjectToTrack(t2, a2);</span>
+<span class="fc" id="L33">		orbit.addObjectToTrack(t3, a3);</span>
+<span class="fc" id="L34">		System.out.println(orbit.toString());</span>
+<span class="fc" id="L35">		assertTrue(orbit.toString().contains(&quot;track1:aa&quot;));</span>
+<span class="fc" id="L36">		assertTrue(orbit.toString().contains(&quot;最好成绩:1.0&quot;));</span>
+<span class="fc" id="L37">	}</span>
+	@Test
+	public void checkRepTest() throws sameLabelException, illegalParameterException {
+<span class="fc" id="L40">		Athlete a1 = Athlete.getInstance(&quot;dd&quot;, 1, &quot;AAA&quot;, 11, 1);</span>
+<span class="fc" id="L41">		Athlete a2 = Athlete.getInstance(&quot;ee&quot;, 2, &quot;AAA&quot;, 11, 2);</span>
+<span class="fc" id="L42">		Athlete a3 = Athlete.getInstance(&quot;ff&quot;, 3, &quot;AAA&quot;, 11, 3);</span>
+<span class="fc" id="L43">		Track t4 = new Track(&quot;track4&quot;, 300);</span>
+<span class="fc" id="L44">		orbit.addTrack(t1);</span>
+<span class="fc" id="L45">		orbit.addTrack(t2);</span>
+<span class="fc" id="L46">		orbit.addTrack(t3);</span>
+<span class="fc" id="L47">		orbit.addTrack(t4);</span>
+<span class="fc" id="L48">		orbit.addObjectToTrack(t1, a1);</span>
+<span class="fc" id="L49">		orbit.addObjectToTrack(t2, a2);</span>
+<span class="fc" id="L50">		orbit.addObjectToTrack(t3, a3);</span>
+<span class="fc" id="L51">		assertTrue(orbit.checkRep());</span>
+<span class="fc" id="L52">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

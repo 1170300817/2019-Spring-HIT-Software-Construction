@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TrackCircularOrbitBuilder.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.TrackGame</a> &gt; <span class="el_source">TrackCircularOrbitBuilder.java</span></div><h1>TrackCircularOrbitBuilder.java</h1><pre class="source lang-java linenums">package applications.TrackGame;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import circularOrbit.CircularOrbitBuilder;
+import exception.illegalParameterException;
+import exception.illegalTextGrammarException;
+import exception.sameLabelException;
+import phsicalObject.PhysicalObject;
+
+<span class="fc" id="L18">public class TrackCircularOrbitBuilder extends CircularOrbitBuilder&lt;PhysicalObject, Athlete&gt; {</span>
+	public Integer gameType;
+	public Integer trackNum;
+
+
+	public Integer getGameType() {
+<span class="nc" id="L24">		return gameType;</span>
+	}
+
+	public Integer getTrackNum() {
+<span class="nc" id="L28">		return trackNum;</span>
+	}
+
+	/**
+	 * 创建具体类型的子类
+	 */
+	@Override
+	public void createCircularOrbit() {
+<span class="fc" id="L36">		concreteCircularOrbit = new TrackCircularOrbit();</span>
+<span class="fc" id="L37">	}</span>
+
+	public List&lt;Athlete&gt; createFromFile(String fileString)
+			throws illegalTextGrammarException, NumberFormatException, IOException, sameLabelException, illegalParameterException {
+<span class="fc" id="L41">		List&lt;Athlete&gt; athleteList = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L42">		BufferedReader in = new BufferedReader(new FileReader(new File(fileString)));</span>
+		String fileline;
+<span class="fc" id="L44">		String athletepattern = &quot;Athlete\\s*::=\\s*&lt;([a-zA-Z]+),(\\d+),([A-Z]{3}),(\\d+),(\\d{1,2}\\.\\d{2})&gt;&quot;;</span>
+<span class="fc" id="L45">		String gamepattern = &quot;Game\\s*::=\\s*(100|200|400)&quot;;</span>
+<span class="fc" id="L46">		String trackpattern = &quot;NumOfTracks\\s*::=\\s*([4-9]|10)&quot;;</span>
+
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">		while ((fileline = in.readLine()) != null) {</span>
+<span class="fc" id="L49">			Matcher athleteMatcher = Pattern.compile(athletepattern).matcher(fileline);</span>
+<span class="fc" id="L50">			Matcher gameMatcher = Pattern.compile(gamepattern).matcher(fileline);</span>
+<span class="fc" id="L51">			Matcher trackMatcher = Pattern.compile(trackpattern).matcher(fileline);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">			if (athleteMatcher.find()) {</span>
+<span class="fc" id="L53">				String nameString = athleteMatcher.group(1);</span>
+<span class="fc" id="L54">				Integer idNum = Integer.valueOf(athleteMatcher.group(2));</span>
+<span class="fc" id="L55">				String nationality = athleteMatcher.group(3);</span>
+<span class="fc" id="L56">				int age = Integer.valueOf(athleteMatcher.group(4));</span>
+<span class="fc" id="L57">				double bestRecord = Double.valueOf(athleteMatcher.group(5));</span>
+				Athlete a;
+<span class="fc" id="L59">				a = Athlete.getInstance(nameString, idNum, nationality, age, bestRecord);</span>
+<span class="fc" id="L60">				athleteList.add(a);</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">			} else if (gameMatcher.find()) {</span>
+<span class="nc" id="L62">				gameType = Integer.valueOf(gameMatcher.group(1));</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">			} else if (trackMatcher.find()) {</span>
+<span class="nc" id="L64">				trackNum = Integer.valueOf(trackMatcher.group(1));</span>
+<span class="nc" id="L65">			} else {</span>
+<span class="fc" id="L66">				analyzeInput(fileline);</span>
+			}
+		}
+<span class="nc" id="L69">		in.close();</span>
+<span class="nc" id="L70">		return athleteList;</span>
+	}
+
+	public String analyzeInput(String readLine) throws illegalTextGrammarException {
+<span class="fc" id="L74">		String msgString = null;</span>
+<span class="fc" id="L75">		String[] arguments = readLine.trim().split(&quot;\\s&quot;);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		if (arguments[0].equals(&quot;Athlete&quot;)) {</span>
+<span class="fc" id="L77">			String[] parameter = arguments[2].split(&quot;,&quot;);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">			if (parameter.length != 5) {</span>
+<span class="fc" id="L79">				throw new illegalTextGrammarException(readLine + &quot;:运动员参数缺失&quot;);</span>
+			}
+<span class="fc bfc" id="L81" title="All 2 branches covered.">			if (!Pattern.matches(&quot;(&lt;[A-Za-z]+)&quot;, parameter[0])) {</span>
+//				System.out.println(111);
+<span class="fc" id="L83">				throw new illegalTextGrammarException(readLine + &quot;:运动员名字错误&quot;);</span>
+			}
+<span class="fc bfc" id="L85" title="All 2 branches covered.">			if (!Pattern.matches(&quot;([A-Z]{3})&quot;, parameter[2])) {</span>
+<span class="fc" id="L86">				throw new illegalTextGrammarException(readLine + &quot;:运动员国籍错误&quot;);</span>
+			}
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">			if (!Pattern.matches(&quot;(\\d{1,2}\\.\\d{2}&gt;)&quot;, parameter[4])) {</span>
+<span class="fc" id="L89">				throw new illegalTextGrammarException(readLine + &quot;:运动员最好成绩错误&quot;);</span>
+			}
+<span class="fc bfc" id="L91" title="All 2 branches covered.">		} else if (arguments[0].equals(&quot;Game&quot;)) {</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">			if (!Pattern.matches(&quot;(100|200|400)&quot;, arguments[2])) {</span>
+<span class="fc" id="L93">				throw new illegalTextGrammarException(readLine + &quot;:无效的比赛类型&quot;);</span>
+			}
+<span class="fc bfc" id="L95" title="All 2 branches covered.">		} else if (arguments[0].equals(&quot;NumOfTracks&quot;)) {</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">			if (!Pattern.matches(&quot;([4-9]|10)&quot;, arguments[2])) {</span>
+<span class="fc" id="L97">				throw new illegalTextGrammarException(readLine + &quot;:无效的轨道数目&quot;);</span>
+			}
+		}
+<span class="fc" id="L100">		return msgString;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

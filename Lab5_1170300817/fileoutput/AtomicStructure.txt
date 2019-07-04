@@ -1,0 +1,15 @@
+Game ::= 100
+NumOfTracks ::= 5
+Athlete ::= <Bolt,1,JAM,38,9.940000> 
+Athlete ::= <Lewis,2,USA,31,10.000000> 
+Athlete ::= <Ronaldo,10,CNH,20,9.850000> 
+Athlete ::= <Wei,13,JPN,40,9.950000> 
+Athlete ::= <Chen,7,KOR,29,10.120000> 
+Athlete ::= <Park,12,USA,28,10.010000> 
+Athlete ::= <Trump,9,CHN,19,9.890000> 
+Athlete ::= <Obama,6,RUS,19,9.900000> 
+Athlete ::= <Cliton,8,USA,21,9.920000> 
+Athlete ::= <Chistropher,4,USA,39,9.920000> 
+Athlete ::= <Peter,5,USA,40,10.100000> 
+Athlete ::= <Tommy,3,JAM,19,10.110000> 
+Athlete ::= <Coal,11,RUS,19,10.110000> 

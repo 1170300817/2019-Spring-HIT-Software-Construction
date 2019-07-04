@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>RandomStrategy.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.TrackGame.Strategy</a> &gt; <span class="el_source">RandomStrategy.java</span></div><h1>RandomStrategy.java</h1><pre class="source lang-java linenums">package applications.TrackGame.Strategy;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import applications.TrackGame.Athlete;
+import track.Track;
+
+<span class="fc" id="L12">public class RandomStrategy implements Strategy {</span>
+
+	/**
+	 * 排序策略
+	 * 
+	 * @param runnerlist 运动员列表
+	 * @param tracklist  赛道列表
+	 * @return 排序策略Map
+	 */
+	@Override
+	public List&lt;Map&lt;Track, List&lt;Athlete&gt;&gt;&gt; Arrange(List&lt;Athlete&gt; athleteList, List&lt;Track&gt; tracklist) {
+<span class="fc" id="L23">		List&lt;Map&lt;Track, List&lt;Athlete&gt;&gt;&gt; arrangementMapList = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L24">		int OrbitNum = (int) (athleteList.size() / tracklist.size()) + 1;//Orbit的个数</span>
+
+<span class="fc bfc" id="L26" title="All 2 branches covered.">		for (int i = 0; i &lt; OrbitNum; i++) {</span>
+<span class="fc" id="L27">			arrangementMapList.add(new HashMap&lt;&gt;());</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">			for (int j=0;j&lt;tracklist.size();j++) {</span>
+<span class="fc" id="L29">				arrangementMapList.get(i).put(tracklist.get(j), new LinkedList&lt;Athlete&gt;());</span>
+			}
+		}
+<span class="fc" id="L32">		Random random = new Random();</span>
+<span class="fc" id="L33">		int i = 0;</span>
+<span class="fc" id="L34">		int j = 0;</span>
+<span class="fc" id="L35">		int n = 0;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">		for (i=0;i &lt; OrbitNum; i++) {</span>
+<span class="fc" id="L37">			j=0;</span>
+<span class="fc" id="L38">			Map&lt;Track, List&lt;Athlete&gt;&gt; currentMap=arrangementMapList.get(i);</span>
+<span class="fc bfc" id="L39" title="All 4 branches covered.">			while( j &lt; tracklist.size()&amp;&amp;!athleteList.isEmpty()) {</span>
+<span class="fc" id="L40">				n = random.nextInt(athleteList.size());</span>
+<span class="fc" id="L41">				currentMap.get(tracklist.get(j)).add(athleteList.get(n));</span>
+<span class="fc" id="L42">				athleteList.remove(n);</span>
+<span class="fc" id="L43">				j++;</span>
+			}
+		}
+<span class="fc" id="L46">		return arrangementMapList;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

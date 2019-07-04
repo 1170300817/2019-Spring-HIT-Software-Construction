@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>StrategyTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">applications.TrackCircularOrbit</a> &gt; <span class="el_source">StrategyTest.java</span></div><h1>StrategyTest.java</h1><pre class="source lang-java linenums">package applications.TrackCircularOrbit;
+
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+
+import applications.TrackGame.Athlete;
+import applications.TrackGame.TrackCircularOrbit;
+import applications.TrackGame.TrackCircularOrbitBuilder;
+import applications.TrackGame.Strategy.RandomStrategy;
+import applications.TrackGame.Strategy.RecordStrategy;
+import applications.TrackGame.Strategy.Strategy;
+import exception.illegalParameterException;
+import exception.sameLabelException;
+import track.Track;
+
+<span class="fc" id="L22">public class StrategyTest {</span>
+	@Test
+	public void randomTest() throws sameLabelException, illegalParameterException {
+<span class="fc" id="L25">		List&lt;Athlete&gt; athleteList = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L26">		  TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+
+<span class="fc" id="L28">		Athlete a1 = Athlete.getInstance(&quot;HH&quot;, 1, &quot;AAA&quot;, 11, 1.00);</span>
+<span class="fc" id="L29">		Athlete a2 = Athlete.getInstance(&quot;JJ&quot;, 2, &quot;AAA&quot;, 11, 2.00);</span>
+<span class="fc" id="L30">		Athlete a3 = Athlete.getInstance(&quot;KK&quot;, 3, &quot;AAA&quot;, 11, 3.00);</span>
+<span class="fc" id="L31">		Athlete a4 = Athlete.getInstance(&quot;LL&quot;, 4, &quot;AAA&quot;, 11, 3.00);</span>
+<span class="fc" id="L32">		Athlete a5 = Athlete.getInstance(&quot;MM&quot;, 5, &quot;AAA&quot;, 11, 3.00);</span>
+<span class="fc" id="L33">		Athlete a6 = Athlete.getInstance(&quot;NN&quot;, 6, &quot;AAA&quot;, 11, 3.00);</span>
+<span class="fc" id="L34">		Athlete a7 = Athlete.getInstance(&quot;OO&quot;, 7, &quot;AAA&quot;, 11, 3.00);</span>
+<span class="fc" id="L35">		Athlete a8 = Athlete.getInstance(&quot;PP&quot;, 8, &quot;AAA&quot;, 11, 3.00);</span>
+<span class="fc" id="L36">		Athlete a9 = Athlete.getInstance(&quot;QQ&quot;, 9, &quot;AAA&quot;, 11, 3.00);</span>
+<span class="fc" id="L37">		athleteList.add(a1);</span>
+<span class="fc" id="L38">		athleteList.add(a2);</span>
+<span class="fc" id="L39">		athleteList.add(a3);</span>
+<span class="fc" id="L40">		athleteList.add(a4);</span>
+<span class="fc" id="L41">		athleteList.add(a5);</span>
+<span class="fc" id="L42">		athleteList.add(a6);</span>
+<span class="fc" id="L43">		athleteList.add(a7);</span>
+<span class="fc" id="L44">		athleteList.add(a8);</span>
+<span class="fc" id="L45">		athleteList.add(a9);</span>
+<span class="fc" id="L46">		List&lt;Track&gt; trackList = new ArrayList&lt;Track&gt;();</span>
+<span class="fc" id="L47">		Strategy strategy1 = new RandomStrategy();</span>
+<span class="fc" id="L48">		int[] DefaultRadius = new int[8];</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">		for (int i = 0; i &lt; 8; i++) {</span>
+<span class="fc" id="L50">			DefaultRadius[i] = 50 + 100 * i;</span>
+		}
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		for (int i = 0; i &lt; 5; i++) {</span>
+<span class="fc" id="L53">			trackList.add(new Track(&quot;tarck&quot; + i, DefaultRadius[i]));</span>
+		}
+<span class="fc" id="L55">		List&lt;Map&lt;Track, List&lt;Athlete&gt;&gt;&gt; arrangementMap = strategy1.Arrange(new ArrayList&lt;&gt;(athleteList), trackList);</span>
+<span class="fc" id="L56">		List&lt;TrackCircularOrbit&gt; trackOrbitList = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">		for (int i = 0; i &lt; 2; i++) {</span>
+<span class="fc" id="L58">			Map&lt;Track, List&lt;Athlete&gt;&gt; currentMap = arrangementMap.get(i);</span>
+<span class="fc" id="L59">			trackBuilder.createCircularOrbit();</span>
+<span class="fc" id="L60">			trackBuilder.bulidTracks(trackList);</span>
+<span class="fc" id="L61">			trackBuilder.bulidPhysicalObjects(currentMap);</span>
+<span class="fc" id="L62">			TrackCircularOrbit newOrbit = (TrackCircularOrbit) trackBuilder.getConcreteCircularOrbit();</span>
+<span class="fc" id="L63">			trackOrbitList.add(newOrbit);</span>
+		}
+//		System.out.println(trackOrbitList.get(0).toString());
+//		System.out.println(trackOrbitList.get(1).toString());
+<span class="fc" id="L67">		assertTrue(trackOrbitList.get(0).checkRep());</span>
+<span class="fc" id="L68">		assertTrue(trackOrbitList.get(1).checkRep());</span>
+<span class="fc" id="L69">	}</span>
+	@Test
+	public void orderTest() throws sameLabelException, illegalParameterException {
+<span class="fc" id="L72">		List&lt;Athlete&gt; athleteList = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L73">		  TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+
+<span class="fc" id="L75">		Athlete a1 = Athlete.getInstance(&quot;HHa&quot;, 1, &quot;AAA&quot;, 11, 1.00);</span>
+<span class="fc" id="L76">		Athlete a2 = Athlete.getInstance(&quot;JJa&quot;, 2, &quot;AAA&quot;, 11, 2.00);</span>
+<span class="fc" id="L77">		Athlete a3 = Athlete.getInstance(&quot;KKa&quot;, 3, &quot;AAA&quot;, 11, 3.00);</span>
+<span class="fc" id="L78">		Athlete a4 = Athlete.getInstance(&quot;LLa&quot;, 4, &quot;AAA&quot;, 11, 3.10);</span>
+<span class="fc" id="L79">		Athlete a5 = Athlete.getInstance(&quot;MMa&quot;, 5, &quot;AAA&quot;, 11, 3.20);</span>
+<span class="fc" id="L80">		Athlete a6 = Athlete.getInstance(&quot;NNa&quot;, 6, &quot;AAA&quot;, 11, 3.30);</span>
+<span class="fc" id="L81">		Athlete a7 = Athlete.getInstance(&quot;OOa&quot;, 7, &quot;AAA&quot;, 11, 3.40);</span>
+<span class="fc" id="L82">		Athlete a8 = Athlete.getInstance(&quot;PPa&quot;, 8, &quot;AAA&quot;, 11, 3.50);</span>
+<span class="fc" id="L83">		Athlete a9 = Athlete.getInstance(&quot;QQa&quot;, 9, &quot;AAA&quot;, 11, 3.60);</span>
+<span class="fc" id="L84">		athleteList.add(a1);</span>
+<span class="fc" id="L85">		athleteList.add(a2);</span>
+<span class="fc" id="L86">		athleteList.add(a3);</span>
+<span class="fc" id="L87">		athleteList.add(a4);</span>
+<span class="fc" id="L88">		athleteList.add(a5);</span>
+<span class="fc" id="L89">		athleteList.add(a6);</span>
+<span class="fc" id="L90">		athleteList.add(a7);</span>
+<span class="fc" id="L91">		athleteList.add(a8);</span>
+<span class="fc" id="L92">		athleteList.add(a9);</span>
+<span class="fc" id="L93">		List&lt;Track&gt; trackList = new ArrayList&lt;Track&gt;();</span>
+<span class="fc" id="L94">		Strategy strategy1 = new RecordStrategy();</span>
+<span class="fc" id="L95">		int[] DefaultRadius = new int[8];</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">		for (int i = 0; i &lt; 8; i++) {</span>
+<span class="fc" id="L97">			DefaultRadius[i] = 50 + 100 * i;</span>
+		}
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		for (int i = 0; i &lt; 5; i++) {</span>
+<span class="fc" id="L100">			trackList.add(new Track(&quot;tarck&quot; + i, DefaultRadius[i]));</span>
+		}
+<span class="fc" id="L102">		List&lt;Map&lt;Track, List&lt;Athlete&gt;&gt;&gt; arrangementMap = strategy1.Arrange(new ArrayList&lt;&gt;(athleteList), trackList);</span>
+<span class="fc" id="L103">		List&lt;TrackCircularOrbit&gt; trackOrbitList = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">		for (int i = 0; i &lt; 2; i++) {</span>
+<span class="fc" id="L105">			Map&lt;Track, List&lt;Athlete&gt;&gt; currentMap = arrangementMap.get(i);</span>
+<span class="fc" id="L106">			trackBuilder.createCircularOrbit();</span>
+<span class="fc" id="L107">			trackBuilder.bulidTracks(trackList);</span>
+<span class="fc" id="L108">			trackBuilder.bulidPhysicalObjects(currentMap);</span>
+<span class="fc" id="L109">			TrackCircularOrbit newOrbit = (TrackCircularOrbit) trackBuilder.getConcreteCircularOrbit();</span>
+<span class="fc" id="L110">			trackOrbitList.add(newOrbit);</span>
+		}
+		
+<span class="fc" id="L113">		assertTrue(trackOrbitList.get(0).checkRep());</span>
+<span class="fc" id="L114">		assertTrue(trackOrbitList.get(1).checkRep());</span>
+		
+		
+<span class="fc" id="L117">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

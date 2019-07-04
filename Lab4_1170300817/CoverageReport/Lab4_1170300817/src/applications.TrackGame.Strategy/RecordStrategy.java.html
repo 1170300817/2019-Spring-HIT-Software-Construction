@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>RecordStrategy.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.TrackGame.Strategy</a> &gt; <span class="el_source">RecordStrategy.java</span></div><h1>RecordStrategy.java</h1><pre class="source lang-java linenums">package applications.TrackGame.Strategy;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import applications.TrackGame.Athlete;
+import track.Track;
+
+<span class="fc" id="L13">public class RecordStrategy implements Strategy {</span>
+	/**
+	 * 排序策略
+	 * 
+	 * @param runnerlist 运动员列表
+	 * @param tracklist  赛道列表
+	 * @return 排序策略Map
+	 */
+	@Override
+	public List&lt;Map&lt;Track, List&lt;Athlete&gt;&gt;&gt; Arrange(List&lt;Athlete&gt; athleteList, List&lt;Track&gt; tracklist) {
+<span class="fc" id="L23">		List&lt;Map&lt;Track, List&lt;Athlete&gt;&gt;&gt; arrangementMapList = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L24">		int OrbitNum = (int) (athleteList.size() / tracklist.size()) + 1;//Orbit的个数</span>
+
+<span class="fc bfc" id="L26" title="All 2 branches covered.">		for (int i = 0; i &lt; OrbitNum; i++) {</span>
+<span class="fc" id="L27">			arrangementMapList.add(new HashMap&lt;&gt;());</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">			for (int j=0;j&lt;tracklist.size();j++) {</span>
+<span class="fc" id="L29">				arrangementMapList.get(i).put(tracklist.get(j), new LinkedList&lt;Athlete&gt;());</span>
+			}
+		}
+<span class="fc" id="L32">		Collections.sort(athleteList, new Comparator&lt;Athlete&gt;() {</span>
+			@Override
+			public int compare(Athlete o1, Athlete o2) {
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">				if (o1.getBestRecord() - o2.getBestRecord() == 0) {</span>
+<span class="nc" id="L36">					return 0;</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">				} else if (o1.getBestRecord() - o2.getBestRecord() &gt; 0) {</span>
+<span class="fc" id="L38">					return 1;</span>
+				} else {
+<span class="nc" id="L40">					return -1;</span>
+				}
+			}
+		});
+<span class="fc" id="L44">		int i = 0;</span>
+<span class="fc" id="L45">		int j = 0;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">		for (i=0;i &lt; OrbitNum; i++) {</span>
+<span class="fc" id="L47">			j=0;</span>
+<span class="fc" id="L48">			Map&lt;Track, List&lt;Athlete&gt;&gt; currentMap=arrangementMapList.get(i);</span>
+<span class="fc bfc" id="L49" title="All 4 branches covered.">			while( j &lt; tracklist.size()&amp;&amp;!athleteList.isEmpty()) {</span>
+<span class="fc" id="L50">				currentMap.get(tracklist.get(j)).add(athleteList.get(0));</span>
+<span class="fc" id="L51">				athleteList.remove(0);</span>
+<span class="fc" id="L52">				j++;</span>
+			}
+		}
+<span class="fc" id="L55">		return arrangementMapList;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

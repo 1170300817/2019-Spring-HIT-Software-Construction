@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Log4jTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">log4j</a> &gt; <span class="el_source">Log4jTest.java</span></div><h1>Log4jTest.java</h1><pre class="source lang-java linenums">package log4j;
+
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.time.Instant;
+
+import org.junit.Test;
+
+import logRecord.logKeeper;
+import logRecord.logRecord;
+
+<span class="fc" id="L13">public class Log4jTest {</span>
+
+<span class="fc" id="L15">	logRecord log1 = new logRecord(</span>
+<span class="fc" id="L16">			&quot;TYPE(DEBUG) TIME(2019-05-19 01:17:35) METHOD(:applications.AtomStructure.AtomGame.gameMain(AtomGame.java:82)) REASON(文件读取成功)\r\n&quot;);</span>
+<span class="fc" id="L17">	logRecord log2 = new logRecord(</span>
+<span class="fc" id="L18">			&quot;TYPE(DEBUG) TIME(2019-05-19 01:17:38) METHOD(:applications.AtomStructure.AtomGame.gameMain(AtomGame.java:95)) REASON(跃迁成功:从track0到track2)\r\n&quot;);</span>
+<span class="fc" id="L19">	logRecord log3 = new logRecord(</span>
+<span class="fc" id="L20">			&quot;TYPE(DEBUG) TIME(2019-05-19 02:05:14) METHOD(:applications.AtomStructure.AtomGame.gameMain(AtomGame.java:87)) REASON(文件读取成功)\r\n&quot;);</span>
+
+	@Test
+	public void log4jTest1() {
+<span class="fc" id="L24">		assertTrue(log3.toString().contains(&quot;类名:	applications.AtomStructure.AtomGame&quot;));</span>
+<span class="fc" id="L25">		assertTrue(log3.toString().contains(&quot;时间:	2019-05-19T02:05:14Z&quot;));</span>
+<span class="fc" id="L26">		assertTrue(log3.toString().contains(&quot;详细信息:	文件读取成功&quot;));</span>
+<span class="fc" id="L27">	}</span>
+	@Test
+	public void log4jTest2() {
+<span class="fc" id="L30">		assertTrue(log3.getClassName().equals(&quot;applications.AtomStructure.AtomGame&quot;));</span>
+<span class="fc" id="L31">		assertTrue(log3.getLogType().equals(&quot;DEBUG&quot;));</span>
+<span class="fc" id="L32">		assertTrue(log3.getReason().equals(&quot;文件读取成功&quot;));</span>
+<span class="fc" id="L33">		assertTrue(log3.getMethodName().equals(&quot;gameMain&quot;));</span>
+<span class="fc" id="L34">	}</span>
+	@Test
+	public void log4jFliterTest() throws IOException {
+<span class="fc" id="L37">		 logKeeper LOGKEEPER=new logKeeper();</span>
+<span class="fc" id="L38">		String inputString1=&quot;2019-05-19 01:17:35&quot;;</span>
+<span class="fc" id="L39">		String inputString2=&quot;2019-05-19 02:05:14&quot;;</span>
+<span class="fc" id="L40">		final Instant time1 = Instant.parse(inputString1.replace(' ','T')+&quot;Z&quot;);</span>
+<span class="fc" id="L41">		final Instant time2 = Instant.parse(inputString2.replace(' ','T')+&quot;Z&quot;);</span>
+<span class="fc bfc" id="L42" title="All 4 branches covered.">		String resultString=LOGKEEPER.getFilterLogs(p -&gt; p.getTime().isAfter(time1)&amp;&amp;p.getTime().isBefore(time2));</span>
+<span class="fc" id="L43">		assertTrue(resultString.contains(&quot;详细信息:	跃迁成功:从track0到track2&quot;));</span>
+
+		
+<span class="fc" id="L46">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

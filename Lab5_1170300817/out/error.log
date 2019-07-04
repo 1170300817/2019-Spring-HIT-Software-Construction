@@ -1,0 +1,2 @@
+TYPE(ERROR) TIME(2019-05-30 11:00:04) METHOD(:applications.socialnetworkcircle.SocialNetworkGame.gameMain(SocialNetworkGame.java:123)) REASON(TommyWong为名的对象已经存在)
+TYPE(ERROR) TIME(2019-05-30 13:13:36) METHOD(:applications.socialnetworkcircle.SocialNetworkGame.gameMain(SocialNetworkGame.java:123)) REASON(TommyWong为名的对象已经存在)

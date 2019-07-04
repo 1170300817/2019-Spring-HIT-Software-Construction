@@ -1,0 +1,2 @@
+SocialTie ::= <TommyWong, aaa, 0.98>
+

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Person.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.SocialNetworkCircle</a> &gt; <span class="el_source">Person.java</span></div><h1>Person.java</h1><pre class="source lang-java linenums">package applications.SocialNetworkCircle;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+
+import exception.illegalParameterException;
+import exception.sameLabelException;
+import phsicalObject.PhysicalObject;
+
+public class Person extends PhysicalObject {
+	// Abstraction function:
+	// 所以AF是从一个记录着名字，年龄，gender的抽象数据型到现实人际网络中的人的映射
+
+	// Representation invariant:
+	// 名字，年龄，gender都不能为空
+
+	// Safety from rep exposure:
+	// 同父类
+	// 设置关键数据age,gender为private final防止更改
+	private final int age;
+	private final String gender;
+<span class="fc" id="L22">	private static final ArrayList&lt;String&gt; nameList = new ArrayList&lt;String&gt;();</span>
+
+	public Integer getAge() {
+<span class="fc" id="L25">		return age;</span>
+	}
+
+	public String getGender() {
+<span class="fc" id="L29">		return gender;</span>
+	}
+
+	/**
+	 * @param name
+	 * @param age
+	 * @param gender
+	 */
+	public Person(String name, int age, String gender) {
+<span class="fc" id="L38">		super(name);</span>
+<span class="fc" id="L39">		this.age = age;</span>
+<span class="fc" id="L40">		this.gender = gender;</span>
+<span class="fc" id="L41">	}</span>
+
+	/**
+	 * 静态工厂方法
+	 * 
+	 * @param name   名字
+	 * @param age    年龄
+	 * @param gender 性别
+	 * @return 实例
+	 * @throws sameLabelException
+	 * @throws illegalParameterException
+	 */
+	public static Person getInstance(String name, int age, String gender)
+			throws sameLabelException, illegalParameterException {
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">		for (String s : nameList) {</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">			if (s.equals(name)) {</span>
+<span class="fc" id="L58">				throw new sameLabelException(name + &quot;为名的对象已经存在&quot;);</span>
+			}
+		}
+
+<span class="fc" id="L62">		Person p = new Person(name, age, gender);</span>
+<span class="fc" id="L63">		p.checkRep();</span>
+<span class="fc" id="L64">		nameList.add(name);</span>
+<span class="fc" id="L65">		return p;</span>
+
+	}
+
+	public void checkRep() throws illegalParameterException {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		if (!Pattern.matches(&quot;(\\s*[A-Za-z0-9]+)&quot;, name)) {</span>
+<span class="fc" id="L71">			throw new illegalParameterException(name + &quot;:人物名字错误&quot;);</span>
+		}
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		if (!Pattern.matches(&quot;([MF])&quot;, gender)) {</span>
+<span class="fc" id="L74">			throw new illegalParameterException(gender + &quot;:人物性别错误&quot;);</span>
+		}
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		if (!Pattern.matches(&quot;(\\d{1,3})&quot;, String.valueOf(age))) {</span>
+<span class="fc" id="L77">			throw new illegalParameterException(gender + &quot;:人物年龄错误&quot;);</span>
+		}
+
+<span class="fc" id="L80">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

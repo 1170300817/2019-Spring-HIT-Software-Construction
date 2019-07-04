@@ -1,0 +1,3 @@
+CentralUser ::= <TommyWong,30>
+SocialTie ::= <TommyWong, LisaWong, 0.98>
+Friend ::= <LisaWong, 25, F>

@@ -1,0 +1,5 @@
+TYPE(ERROR) TIME(2019-05-19 11:51:02) METHOD(:applications.SocialNetworkCircle.SocialNetworkGame.gameMain(SocialNetworkGame.java:81)) REASON(TommyWong:人物名字错误)
+TYPE(ERROR) TIME(2019-05-19 11:52:04) METHOD(:applications.SocialNetworkCircle.SocialNetworkGame.gameMain(SocialNetworkGame.java:81)) REASON(M:人物年龄错误)
+TYPE(ERROR) TIME(2019-05-19 13:49:55) METHOD(:applications.SocialNetworkCircle.SocialNetworkGame.gameMain(SocialNetworkGame.java:81)) REASON(LisaWong为名的对象已经存在)
+TYPE(ERROR) TIME(2019-05-19 13:50:29) METHOD(:applications.SocialNetworkCircle.SocialNetworkGame.gameMain(SocialNetworkGame.java:81)) REASON(TommyWong为名的对象已经存在)
+TYPE(ERROR) TIME(2019-05-19 13:57:01) METHOD(:applications.SocialNetworkCircle.SocialNetworkGame.gameMain(SocialNetworkGame.java:81)) REASON(从TommyWong到LisaWong的边已经存在)

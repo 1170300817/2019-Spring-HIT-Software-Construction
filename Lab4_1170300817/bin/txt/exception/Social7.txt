@@ -1,0 +1,3 @@
+
+SocialTie ::= <TommyWong, LisaWong, 1.98>
+Friend ::= <LisaWong, 25, F>

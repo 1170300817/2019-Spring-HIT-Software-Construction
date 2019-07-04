@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TrackCircularOrbitBuilderTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">applications.TrackCircularOrbit</a> &gt; <span class="el_source">TrackCircularOrbitBuilderTest.java</span></div><h1>TrackCircularOrbitBuilderTest.java</h1><pre class="source lang-java linenums">package applications.TrackCircularOrbit;
+
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
+import org.junit.Test;
+
+import applications.TrackGame.TrackCircularOrbit;
+import applications.TrackGame.TrackCircularOrbitBuilder;
+import applications.TrackGame.TrackGame;
+import applications.TrackGame.Strategy.RandomStrategy;
+import applications.TrackGame.Strategy.Strategy;
+import exception.illegalParameterException;
+import exception.illegalTextGrammarException;
+import exception.sameLabelException;
+
+<span class="fc" id="L18">public class TrackCircularOrbitBuilderTest {</span>
+
+	@Test
+	public void trackException1Test() {
+<span class="fc" id="L22">		TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+		try {
+<span class="nc" id="L24">			trackBuilder.createFromFile(&quot;src/txt/exception/TrackGame1.txt&quot;);</span>
+<span class="nc" id="L25">		} catch (NumberFormatException | illegalTextGrammarException | sameLabelException | IOException</span>
+<span class="fc" id="L26">				| illegalParameterException e) {</span>
+<span class="fc" id="L27">			assertTrue(e.getMessage().contains(&quot;:运动员参数缺失&quot;));</span>
+		}
+<span class="fc" id="L29">	}</span>
+
+	@Test
+	public void trackException2Test() {
+<span class="fc" id="L33">		TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+		try {
+<span class="nc" id="L35">			trackBuilder.createFromFile(&quot;src/txt/exception/TrackGame2.txt&quot;);</span>
+<span class="nc" id="L36">		} catch (NumberFormatException | illegalTextGrammarException | sameLabelException | IOException</span>
+<span class="fc" id="L37">				| illegalParameterException e) {</span>
+<span class="fc" id="L38">			assertTrue(e.getMessage().contains(&quot;:运动员名字错误&quot;));</span>
+		}
+<span class="fc" id="L40">	}</span>
+
+	@Test
+	public void trackException3Test() {
+<span class="fc" id="L44">		TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+		try {
+<span class="nc" id="L46">			trackBuilder.createFromFile(&quot;src/txt/exception/TrackGame3.txt&quot;);</span>
+<span class="nc" id="L47">		} catch (NumberFormatException | illegalTextGrammarException | sameLabelException | IOException</span>
+<span class="fc" id="L48">				| illegalParameterException e) {</span>
+<span class="fc" id="L49">			assertTrue(e.getMessage().contains(&quot;:运动员国籍错误&quot;));</span>
+		}
+<span class="fc" id="L51">	}</span>
+
+	@Test
+	public void trackException4Test() {
+<span class="fc" id="L55">		TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+		try {
+<span class="nc" id="L57">			trackBuilder.createFromFile(&quot;src/txt/exception/TrackGame4.txt&quot;);</span>
+<span class="nc" id="L58">		} catch (NumberFormatException | illegalTextGrammarException | sameLabelException | IOException</span>
+<span class="fc" id="L59">				| illegalParameterException e) {</span>
+<span class="fc" id="L60">			assertTrue(e.getMessage().contains(&quot;:运动员最好成绩错误&quot;));</span>
+		}
+<span class="fc" id="L62">	}</span>
+
+	@Test
+	public void trackException5Test() {
+<span class="fc" id="L66">		TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+		try {
+<span class="nc" id="L68">			trackBuilder.createFromFile(&quot;src/txt/exception/TrackGame5.txt&quot;);</span>
+<span class="nc" id="L69">		} catch (NumberFormatException | illegalTextGrammarException | sameLabelException | IOException</span>
+<span class="fc" id="L70">				| illegalParameterException e) {</span>
+<span class="fc" id="L71">			assertTrue(e.getMessage().contains(&quot;:无效的比赛类型&quot;));</span>
+		}
+<span class="fc" id="L73">	}</span>
+
+	@Test
+	public void trackException6Test() {
+<span class="fc" id="L77">		TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+		try {
+<span class="nc" id="L79">			trackBuilder.createFromFile(&quot;src/txt/exception/TrackGame6.txt&quot;);</span>
+<span class="nc" id="L80">		} catch (NumberFormatException | illegalTextGrammarException | sameLabelException | IOException</span>
+<span class="fc" id="L81">				| illegalParameterException e) {</span>
+<span class="fc" id="L82">			assertTrue(e.getMessage().contains(&quot;:无效的轨道数目&quot;));</span>
+		}
+<span class="fc" id="L84">	}</span>
+
+	@Test
+	public void trackSameLabelExceptionTest() {
+<span class="fc" id="L88">		TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+		try {
+<span class="nc" id="L90">			trackBuilder.createFromFile(&quot;src/txt/exception/TrackGameSameLabel.txt&quot;);</span>
+<span class="nc" id="L91">		} catch (NumberFormatException | illegalTextGrammarException | sameLabelException | IOException</span>
+<span class="fc" id="L92">				| illegalParameterException e) {</span>
+<span class="fc" id="L93">			assertTrue(e.getMessage().contains(&quot;为名的对象已经存在&quot;));</span>
+		}
+<span class="fc" id="L95">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

@@ -1,0 +1,3 @@
+ElementName ::= Rb
+NumberOfTracks ::= 2
+NumberOfElectron ::= 1/2

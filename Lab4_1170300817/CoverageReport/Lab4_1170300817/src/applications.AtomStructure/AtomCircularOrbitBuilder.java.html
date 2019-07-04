@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>AtomCircularOrbitBuilder.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.AtomStructure</a> &gt; <span class="el_source">AtomCircularOrbitBuilder.java</span></div><h1>AtomCircularOrbitBuilder.java</h1><pre class="source lang-java linenums">package applications.AtomStructure;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import circularOrbit.CircularOrbitBuilder;
+import exception.illegalTextGrammarException;
+import exception.logicalErrorException;
+import track.Track;
+
+<span class="fc" id="L20">public class AtomCircularOrbitBuilder extends CircularOrbitBuilder&lt;Particle, Particle&gt; {</span>
+
+	public void createFromFile(String fileString)
+			throws illegalTextGrammarException, NumberFormatException, IOException, logicalErrorException {
+<span class="fc" id="L24">		Particle Nucleus = null;</span>
+<span class="fc" id="L25">		int[] DefaultRadius = new int[10];</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">		for (int i = 0; i &lt; 10; i++) {</span>
+<span class="fc" id="L27">			DefaultRadius[i] = 50 + 100 * i;</span>
+		}
+<span class="fc" id="L29">		Integer trackNum = null;</span>
+<span class="fc" id="L30">		createCircularOrbit();</span>
+<span class="fc" id="L31">		BufferedReader in = new BufferedReader(new FileReader(new File(fileString)));</span>
+
+		String fileline;
+<span class="fc" id="L34">		String elementpattern = &quot;ElementName\\s*::=\\s*([A-Z]{1}[a-z]{0,1})$&quot;;</span>
+<span class="fc" id="L35">		String trackpattern = &quot;NumberOfTracks\\s*::=\\s*(\\d+)&quot;;</span>
+<span class="fc" id="L36">		String electronpattern = &quot;NumberOfElectron\\s*::=\\s*((?:(?:\\d+\\/\\d+)|;)+)&quot;;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">		while ((fileline = in.readLine()) != null) {</span>
+<span class="fc" id="L38">			Matcher elementMatcher = Pattern.compile(elementpattern).matcher(fileline);</span>
+<span class="fc" id="L39">			Matcher trackMatcher = Pattern.compile(trackpattern).matcher(fileline);</span>
+<span class="fc" id="L40">			Matcher electronMatcher = Pattern.compile(electronpattern).matcher(fileline);</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">			if (elementMatcher.find()) {</span>
+<span class="fc" id="L42">				Nucleus = Particle.getNucleus(elementMatcher.group(1));</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">			} else if (trackMatcher.find()) {</span>
+<span class="fc" id="L44">				trackNum = Integer.valueOf(trackMatcher.group(1));</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">			} else if (electronMatcher.find()) {</span>
+<span class="fc" id="L46">				List&lt;Track&gt; trackList = new ArrayList&lt;Track&gt;();</span>
+<span class="fc" id="L47">				Map&lt;Track, List&lt;Particle&gt;&gt; elementMap = new HashMap&lt;Track, List&lt;Particle&gt;&gt;();</span>
+<span class="fc" id="L48">				String[] NUm = electronMatcher.group(1).split(&quot;;&quot;);</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">				if (NUm.length != trackNum) {</span>
+<span class="fc" id="L50">					in.close();</span>
+<span class="fc" id="L51">					throw new logicalErrorException(&quot;:轨道数前后不一致错误&quot;);</span>
+				}
+<span class="fc bfc" id="L53" title="All 2 branches covered.">				for (int i = 0; i &lt; NUm.length; i++) {</span>
+<span class="fc" id="L54">					Track track = new Track(&quot;track&quot; + i, DefaultRadius[i]);</span>
+<span class="fc" id="L55">					trackList.add(track);</span>
+<span class="fc" id="L56">					String[] value = NUm[i].split(&quot;/&quot;);</span>
+<span class="fc" id="L57">					int objNum = Integer.valueOf(value[1]);</span>
+<span class="fc" id="L58">					List&lt;Particle&gt; currentList = new LinkedList&lt;Particle&gt;();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">					for (int j = 0; j &lt; objNum; j++) {</span>
+<span class="fc" id="L60">						Particle p = Particle.getElectron();</span>
+<span class="fc" id="L61">						currentList.add(p);</span>
+					}
+<span class="fc" id="L63">					elementMap.put(track, currentList);</span>
+				}
+<span class="fc" id="L65">				this.createCircularOrbit();</span>
+<span class="fc" id="L66">				this.bulidTracks(trackList);</span>
+<span class="fc" id="L67">				this.bulidPhysicalObjects(Nucleus, elementMap);</span>
+<span class="fc" id="L68">			} else {</span>
+<span class="nc" id="L69">				analyzeInput(fileline);</span>
+			}
+		}
+<span class="fc" id="L72">		in.close();</span>
+
+<span class="fc" id="L74">	}</span>
+
+	public void analyzeInput(String readLine) throws illegalTextGrammarException {
+<span class="fc" id="L77">		String[] arguments = readLine.trim().split(&quot;\\s&quot;);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		if (arguments[0].equals(&quot;ElementName&quot;)) {</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">			if (arguments.length != 3) {</span>
+<span class="fc" id="L80">				throw new illegalTextGrammarException(readLine + &quot;:元素名字参数缺失&quot;);</span>
+			}
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">			if (!Pattern.matches(&quot;\\s*([A-Z] {1}[a-z] {0,1})&quot;, arguments[2])) {</span>
+<span class="fc" id="L83">				throw new illegalTextGrammarException(readLine + &quot;:元素名字错误&quot;);</span>
+			}
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		} else if (arguments[0].equals(&quot;NumberOfTracks&quot;)) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">			if (arguments.length != 3) {</span>
+<span class="fc" id="L87">				throw new illegalTextGrammarException(readLine + &quot;:轨道数参数缺失&quot;);</span>
+			}
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">			if (!Pattern.matches(&quot;\\s*(\\d+)&quot;, arguments[2])) {</span>
+<span class="fc" id="L90">				throw new illegalTextGrammarException(readLine + &quot;:轨道数错误&quot;);</span>
+			}
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">		} else if (arguments[0].equals(&quot;NumberOfElectron&quot;)) {</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">			if (!Pattern.matches(&quot;\\s*((?:(?:\\d+\\/\\d+)|;)+)&quot;, arguments[2])) {</span>
+<span class="fc" id="L94">				throw new illegalTextGrammarException(readLine + &quot;:轨道电子参数错误&quot;);</span>
+			}
+		}
+<span class="nc" id="L97">	}</span>
+
+	@Override
+	public void createCircularOrbit() {
+<span class="fc" id="L101">		concreteCircularOrbit = new AtomCircularOrbit();</span>
+<span class="fc" id="L102">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TrackGame.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.TrackGame</a> &gt; <span class="el_source">TrackGame.java</span></div><h1>TrackGame.java</h1><pre class="source lang-java linenums">package applications.TrackGame;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import applications.AtomStructure.AtomGame;
+import applications.TrackGame.Strategy.RandomStrategy;
+import applications.TrackGame.Strategy.RecordStrategy;
+import applications.TrackGame.Strategy.Strategy;
+import circularOrbitHelper.CircularOrbitAPIs;
+import exception.illegalParameterException;
+import exception.illegalTextGrammarException;
+import exception.objectNoFoundException;
+import exception.sameLabelException;
+import logRecord.logKeeper;
+import logRecord.loggerFactory;
+import track.Track;
+
+<span class="nc" id="L28">public class TrackGame {</span>
+	// Abstraction function:
+	// 所以AF是一个保存着比赛各样数据和操作的抽象数据型到真实的比赛管理系统的映射
+
+	// Representation invariant:
+	// 轨道不能重名，不能有轨道具有相同半径
+	// 不能有重号的运动员
+
+	// Safety from rep exposure:
+	// 设置关键数据athleteList，trackOrbitList，trackBuilder为private final
+	// 在有必要的时候使用防御性拷贝
+//	private Integer gameType;
+	private Integer trackNum;
+<span class="nc" id="L41">	private List&lt;Athlete&gt; athleteList = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L42">	private final List&lt;TrackCircularOrbit&gt; trackOrbitList = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L43">	private final TrackCircularOrbitBuilder trackBuilder = new TrackCircularOrbitBuilder();</span>
+<span class="nc" id="L44">	private static Logger LOGGER = loggerFactory.createLogger(AtomGame.class);</span>
+	private logKeeper LOGKEEPER;
+
+	/**
+	 * 菜单
+	 */
+	public void GameMenu() {
+<span class="nc" id="L51">		System.out.println(&quot;1.\t读取文件&quot;);</span>
+<span class="nc" id="L52">		System.out.println(&quot;2.\t随机分配赛道&quot;);</span>
+<span class="nc" id="L53">		System.out.println(&quot;3.\t按成绩分配赛道&quot;);</span>
+<span class="nc" id="L54">		System.out.println(&quot;4.\t增加新赛道&quot;);</span>
+<span class="nc" id="L55">		System.out.println(&quot;5.\t增加新运动员&quot;);</span>
+<span class="nc" id="L56">		System.out.println(&quot;6.\t删除运动员&quot;);</span>
+<span class="nc" id="L57">		System.out.println(&quot;7.\t删除赛道&quot;);</span>
+<span class="nc" id="L58">		System.out.println(&quot;8.\t计算信息熵&quot;);</span>
+<span class="nc" id="L59">		System.out.println(&quot;9.\t交换两名选手的赛道和组别&quot;);</span>
+<span class="nc" id="L60">		System.out.println(&quot;10.\t可视化&quot;);</span>
+<span class="nc" id="L61">		System.out.println(&quot;11.\t显示分组信息&quot;);</span>
+<span class="nc" id="L62">		System.out.println(&quot;12.\t日志查询&quot;);</span>
+//		System.out.println(&quot;12.\t4人接力赛&quot;);
+<span class="nc" id="L64">		System.out.println(&quot;end.\t 结束&quot;);</span>
+<span class="nc" id="L65">	}</span>
+
+	/**
+	 * 游戏主体
+	 * 
+	 * @throws IOException
+	 * @throws objectNoFoundException
+	 */
+	public void gameMain() throws IOException, objectNoFoundException {
+		String inputString;
+		String[] arguments;
+<span class="nc" id="L76">		boolean exitflag = false;</span>
+<span class="nc" id="L77">		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));</span>
+		while (true) {
+<span class="nc" id="L79">			GameMenu();</span>
+<span class="nc" id="L80">			String input = reader.readLine();</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">			if (input != null) {</span>
+<span class="nc" id="L82">				input = input.trim();</span>
+			}else {
+				continue;
+			}
+<span class="nc bnc" id="L86" title="All 14 branches missed.">			switch (input) {</span>
+			case &quot;1&quot;:// 读取文件
+				try {
+<span class="nc" id="L89">					System.out.println(&quot;输入需要读取的文件名：例如TrackGame.txt\n&quot;);</span>
+<span class="nc" id="L90">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L91">					athleteList = trackBuilder.createFromFile(&quot;src/txt/&quot; + inputString);</span>
+//					athleteList=trackBuilder.createFromFile(&quot;src/txt/&quot; + &quot;TrackGame.txt&quot;);
+
+<span class="nc" id="L94">				} catch (illegalTextGrammarException | sameLabelException | illegalParameterException e) {</span>
+<span class="nc" id="L95">					System.out.println(e.getMessage());</span>
+<span class="nc" id="L96">					System.out.println(&quot;请重新读取文件&quot;);</span>
+<span class="nc" id="L97">					break;</span>
+<span class="nc" id="L98">				} catch (NumberFormatException e) {</span>
+					// TODO Auto-generated catch block
+<span class="nc" id="L100">					e.printStackTrace();</span>
+				}
+//				gameType = trackBuilder.getGameType();
+<span class="nc" id="L103">				trackNum = trackBuilder.getTrackNum();</span>
+<span class="nc" id="L104">				System.out.println(&quot;文件读取成功&quot;);</span>
+<span class="nc" id="L105">				break;</span>
+			case &quot;2&quot;:// 随机分配赛道
+<span class="nc" id="L107">				Strategy strategy1 = new RandomStrategy();</span>
+<span class="nc" id="L108">				this.arrangeOrbit(strategy1);</span>
+<span class="nc" id="L109">				checkRep();</span>
+<span class="nc" id="L110">				arrangeOutout();</span>
+<span class="nc" id="L111">				System.out.println(&quot;分组完成\n&quot;);</span>
+<span class="nc" id="L112">				break;</span>
+			case &quot;3&quot;:// 按成绩分配赛道
+<span class="nc" id="L114">				Strategy strategy2 = new RecordStrategy();</span>
+<span class="nc" id="L115">				this.arrangeOrbit(strategy2);</span>
+<span class="nc" id="L116">				checkRep();</span>
+<span class="nc" id="L117">				arrangeOutout();</span>
+<span class="nc" id="L118">				System.out.println(&quot;分组完成\n&quot;);</span>
+<span class="nc" id="L119">				break;</span>
+			case &quot;4&quot;:// 增加轨道数
+<span class="nc" id="L121">				trackNum++;</span>
+<span class="nc" id="L122">				System.out.println(&quot;轨道数：&quot; + trackNum + &quot;\n&quot;);</span>
+<span class="nc" id="L123">				System.out.println(&quot;请重新分配方案\n&quot;);</span>
+<span class="nc" id="L124">				break;</span>
+			case &quot;5&quot;:// 增加运动员
+<span class="nc" id="L126">				System.out.println(&quot;输入需要增加的运动员的名字，id，国籍，年龄，最好成绩\n&quot;);</span>
+<span class="nc" id="L127">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L128">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L129">				String nameString = arguments[0];</span>
+<span class="nc" id="L130">				int idNum = Integer.valueOf(arguments[1]);</span>
+<span class="nc" id="L131">				String nationality = arguments[2];</span>
+<span class="nc" id="L132">				int age = Integer.valueOf(arguments[3]);</span>
+<span class="nc" id="L133">				double bestRecord = Double.valueOf(arguments[4]);</span>
+				Athlete a;
+				try {
+<span class="nc" id="L136">					a = Athlete.getInstance(nameString, idNum, nationality, age, bestRecord);</span>
+<span class="nc" id="L137">					athleteList.add(a);</span>
+<span class="nc" id="L138">				} catch (sameLabelException | illegalParameterException e) {</span>
+<span class="nc" id="L139">					System.out.println(e.getMessage());</span>
+				}
+<span class="nc" id="L141">				System.out.println(&quot;增加成功\n&quot;);</span>
+<span class="nc" id="L142">				break;</span>
+			case &quot;6&quot;:// 删除运动员
+<span class="nc" id="L144">				System.out.println(&quot;输入需要删除的运动员的id\n&quot;);</span>
+<span class="nc" id="L145">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L146">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L147">				int id = Integer.valueOf(arguments[0]);</span>
+<span class="nc" id="L148">				Iterator&lt;Athlete&gt; iterator = athleteList.iterator();</span>
+<span class="nc" id="L149">				boolean flag1 = false;</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">				while (iterator.hasNext()) {</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">					if (iterator.next().getIdNum() == id) {</span>
+<span class="nc" id="L152">						iterator.remove();</span>
+<span class="nc" id="L153">						System.out.println(&quot;删除成功\n&quot;);</span>
+<span class="nc" id="L154">						flag1 = true;</span>
+					}
+				}
+<span class="nc bnc" id="L157" title="All 2 branches missed.">				if (!flag1) {</span>
+<span class="nc" id="L158">					System.out.println(&quot;删除失败\n&quot;);</span>
+				}
+
+<span class="nc" id="L161">				break;</span>
+			case &quot;7&quot;:// 删除赛道
+<span class="nc" id="L163">				trackNum--;</span>
+<span class="nc" id="L164">				System.out.println(&quot;轨道数-1&quot;);</span>
+<span class="nc" id="L165">				System.out.println(&quot;当前轨道数：&quot; + trackNum);</span>
+<span class="nc" id="L166">				System.out.println(&quot;请重新分配方案&quot;);</span>
+<span class="nc" id="L167">				break;</span>
+			case &quot;8&quot;:// 计算信息熵
+<span class="nc" id="L169">				System.out.println(&quot;输入需要计算信息熵的轨道系统序号&quot;);</span>
+<span class="nc" id="L170">				System.out.println(&quot;输入范围为0——&quot; + (trackOrbitList.size() - 1));</span>
+<span class="nc" id="L171">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L172">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L173">				int currentOrbit = Integer.valueOf(arguments[0]);</span>
+<span class="nc" id="L174">				System.out.println(&quot;信息熵为：&quot; + trackOrbitList.get(currentOrbit).getObjectDistributionEntropy() + &quot;\n&quot;);</span>
+<span class="nc" id="L175">				break;</span>
+			case &quot;9&quot;:// 交换两名选手的赛道和组别
+<span class="nc" id="L177">				System.out.println(&quot;输入两名需要交换的运动员的id\n&quot;);</span>
+<span class="nc" id="L178">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L179">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L180">				int id1 = Integer.valueOf(arguments[0]);</span>
+<span class="nc" id="L181">				int id2 = Integer.valueOf(arguments[1]);</span>
+<span class="nc" id="L182">				Athlete a1 = null;</span>
+<span class="nc" id="L183">				Athlete a2 = null;</span>
+
+<span class="nc" id="L185">				Iterator&lt;Athlete&gt; iterator1 = athleteList.iterator();</span>
+
+<span class="nc bnc" id="L187" title="All 2 branches missed.">				while (iterator1.hasNext()) {</span>
+<span class="nc" id="L188">					Athlete tmp = iterator1.next();</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">					if (tmp.getIdNum() == id1) {</span>
+<span class="nc" id="L190">						a1 = tmp;</span>
+					}
+<span class="nc bnc" id="L192" title="All 2 branches missed.">					if (tmp.getIdNum() == id2) {</span>
+<span class="nc" id="L193">						a2 = tmp;</span>
+					}
+				}
+<span class="nc" id="L196">				Track t1 = null;</span>
+<span class="nc" id="L197">				Track t2 = null;</span>
+<span class="nc" id="L198">				TrackCircularOrbit o1 = null;</span>
+<span class="nc" id="L199">				TrackCircularOrbit o2 = null;</span>
+<span class="nc bnc" id="L200" title="All 4 branches missed.">				if (a1 == null || a2 == null) {</span>
+<span class="nc" id="L201">					System.out.println(&quot;选手不存在&quot;);</span>
+<span class="nc" id="L202">					break;</span>
+				}
+<span class="nc bnc" id="L204" title="All 2 branches missed.">				for (TrackCircularOrbit Orb : trackOrbitList) {</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">					if (Orb.contains(a1)) {</span>
+<span class="nc" id="L206">						t1 = Orb.getObjectTrack(a1);</span>
+<span class="nc" id="L207">						o1 = Orb;</span>
+					}
+<span class="nc bnc" id="L209" title="All 2 branches missed.">					if (Orb.contains(a2)) {</span>
+<span class="nc" id="L210">						t2 = Orb.getObjectTrack(a2);</span>
+<span class="nc" id="L211">						o2 = Orb;</span>
+					}
+				}
+<span class="nc" id="L214">				o1.removeObjectOnTrack(t1, a1);</span>
+<span class="nc" id="L215">				o2.removeObjectOnTrack(t2, a2);</span>
+<span class="nc" id="L216">				o1.addObjectToTrack(t1, a2);</span>
+<span class="nc" id="L217">				o2.addObjectToTrack(t2, a1);</span>
+<span class="nc" id="L218">				System.out.println(&quot;交换成功&quot;);</span>
+
+<span class="nc" id="L220">				break;</span>
+			case &quot;10&quot;:// 可视化
+<span class="nc" id="L222">				System.out.println(&quot;输入需要显示的轨道系统序号&quot;);</span>
+<span class="nc" id="L223">				System.out.println(&quot;输入范围为0——&quot; + (trackOrbitList.size() - 1));</span>
+<span class="nc" id="L224">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L225">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L226">				int currentOrbit1 = Integer.valueOf(arguments[0]);</span>
+<span class="nc" id="L227">				CircularOrbitAPIs.visualize(trackOrbitList.get(currentOrbit1));</span>
+<span class="nc" id="L228">				break;</span>
+			case &quot;11&quot;:// 显示分组信息
+<span class="nc" id="L230">				arrangeOutout();</span>
+<span class="nc" id="L231">				break;</span>
+			case &quot;12&quot;:// 查询日志
+<span class="nc" id="L233">				LOGKEEPER = new logKeeper();</span>
+<span class="nc" id="L234">				System.out.println(&quot;选择筛选条件：\n&quot;);</span>
+<span class="nc" id="L235">				System.out.println(&quot;1.\t时间段&quot;);</span>
+<span class="nc" id="L236">				System.out.println(&quot;2.\t按类型&quot;);</span>
+<span class="nc" id="L237">				System.out.println(&quot;3.\t按类&quot;);</span>
+<span class="nc" id="L238">				System.out.println(&quot;4.\t按方法&quot;);</span>
+<span class="nc" id="L239">				input = reader.readLine().trim();</span>
+<span class="nc bnc" id="L240" title="All 5 branches missed.">				switch (input) {</span>
+				case &quot;1&quot;:// 时间段
+<span class="nc" id="L242">					System.out.println(&quot;请输入开始时间，格式参考：2019-05-19 02:05:14&quot;);</span>
+<span class="nc" id="L243">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L244">					final Instant time1 = Instant.parse(inputString.replace(' ', 'T') + &quot;Z&quot;);</span>
+<span class="nc" id="L245">					System.out.println(&quot;请输入结束时间，格式参考：2019-05-19 02:05:14&quot;);</span>
+<span class="nc" id="L246">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L247">					final Instant time2 = Instant.parse(inputString.replace(' ', 'T') + &quot;Z&quot;);</span>
+<span class="nc" id="L248">					System.out.println(</span>
+<span class="nc bnc" id="L249" title="All 4 branches missed.">							LOGKEEPER.getFilterLogs(p -&gt; p.getTime().isAfter(time1) &amp;&amp; p.getTime().isBefore(time2)));</span>
+<span class="nc" id="L250">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L251">					break;</span>
+				case &quot;2&quot;:// 按类型
+<span class="nc" id="L253">					System.out.println(&quot;请输入类型：ERROR或DEBUG&quot;);</span>
+<span class="nc" id="L254">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L255">					final String input1 = new String(inputString);</span>
+<span class="nc" id="L256">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getLogType().equals(input1)));</span>
+<span class="nc" id="L257">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L258">					break;</span>
+				case &quot;3&quot;:// 按类
+<span class="nc" id="L260">					System.out.println(&quot;请输入类名&quot;);</span>
+<span class="nc" id="L261">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L262">					final String input2 = new String(inputString);</span>
+<span class="nc" id="L263">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getClassName().equals(input2)));</span>
+<span class="nc" id="L264">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L265">					break;</span>
+				case &quot;4&quot;:// 按方法
+<span class="nc" id="L267">					System.out.println(&quot;请输入方法名&quot;);</span>
+<span class="nc" id="L268">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L269">					final String input3 = new String(inputString);</span>
+<span class="nc" id="L270">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getMethodName().equals(input3)));</span>
+<span class="nc" id="L271">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L272">					break;</span>
+				default:
+<span class="nc" id="L274">					LOGGER.debug(&quot;输入错误&quot;);</span>
+					break;
+				}
+<span class="nc" id="L277">				break;</span>
+//			case &quot;12&quot;:// 4人接力
+//				Strategy strategy3 = new Relay4Strategy();
+//				this.arrangeOrbit(strategy3);
+//				arrangeOutout();
+//				System.out.println(&quot;分组完成\n&quot;);
+//				break;
+			case &quot;end&quot;:// 结束游戏
+<span class="nc" id="L285">				exitflag = true;</span>
+<span class="nc" id="L286">				break;</span>
+			default:
+<span class="nc" id="L288">				System.out.println(&quot;输入错误&quot;);</span>
+				break;
+			}
+<span class="nc bnc" id="L291" title="All 2 branches missed.">			if (exitflag)</span>
+				break;
+		}
+
+<span class="nc" id="L295">	}</span>
+
+	public void arrangeOrbit(Strategy strategy) {
+
+<span class="nc" id="L299">		List&lt;Track&gt; trackList = new ArrayList&lt;Track&gt;();</span>
+<span class="nc" id="L300">		int[] DefaultRadius = new int[8];</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">		for (int i = 0; i &lt; 8; i++) {</span>
+<span class="nc" id="L302">			DefaultRadius[i] = 50 + 100 * i;</span>
+		}
+<span class="nc bnc" id="L304" title="All 2 branches missed.">		for (int i = 0; i &lt; trackNum; i++) {</span>
+<span class="nc" id="L305">			trackList.add(new Track(&quot;tarck&quot; + i, DefaultRadius[i]));</span>
+		}
+<span class="nc" id="L307">		List&lt;Map&lt;Track, List&lt;Athlete&gt;&gt;&gt; arrangementMap = strategy.Arrange(new ArrayList&lt;&gt;(athleteList), trackList);</span>
+
+<span class="nc" id="L309">		int OrbitNum = arrangementMap.size();</span>
+
+<span class="nc" id="L311">		trackOrbitList.clear();</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">		for (int i = 0; i &lt; OrbitNum; i++) {</span>
+<span class="nc" id="L313">			Map&lt;Track, List&lt;Athlete&gt;&gt; currentMap = arrangementMap.get(i);</span>
+<span class="nc" id="L314">			trackBuilder.createCircularOrbit();</span>
+<span class="nc" id="L315">			trackBuilder.bulidTracks(trackList);</span>
+<span class="nc" id="L316">			trackBuilder.bulidPhysicalObjects(currentMap);</span>
+<span class="nc" id="L317">			TrackCircularOrbit newOrbit = (TrackCircularOrbit) trackBuilder.getConcreteCircularOrbit();</span>
+<span class="nc" id="L318">			trackOrbitList.add(newOrbit);</span>
+		}
+<span class="nc" id="L320">	}</span>
+
+	public void arrangeOutout() {
+<span class="nc bnc" id="L323" title="All 2 branches missed.">		for (int i = 0; i &lt; trackOrbitList.size(); i++) {</span>
+<span class="nc" id="L324">			TrackCircularOrbit CurrentOrbit = trackOrbitList.get(i);</span>
+<span class="nc" id="L325">			System.out.println(CurrentOrbit.toString());</span>
+		}
+<span class="nc" id="L327">	}</span>
+
+	/**
+	 * checkRep
+	 */
+	public void checkRep() {
+<span class="nc bnc" id="L333" title="All 2 branches missed.">		for (TrackCircularOrbit Orbit : trackOrbitList) {</span>
+<span class="nc" id="L334">			Orbit.checkRep();</span>
+		}
+<span class="nc" id="L336">	}</span>
+
+	public static void main(String[] args) throws IOException, objectNoFoundException {
+<span class="nc" id="L339">		new TrackGame().gameMain();</span>
+<span class="nc" id="L340">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

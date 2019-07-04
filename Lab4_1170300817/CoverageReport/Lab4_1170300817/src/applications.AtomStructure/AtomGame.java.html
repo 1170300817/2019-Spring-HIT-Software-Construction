@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>AtomGame.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.AtomStructure</a> &gt; <span class="el_source">AtomGame.java</span></div><h1>AtomGame.java</h1><pre class="source lang-java linenums">package applications.AtomStructure;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.Instant;
+import org.apache.log4j.Logger;
+
+import circularOrbitHelper.CircularOrbitAPIs;
+import exception.illegalTextGrammarException;
+import exception.logicalErrorException;
+import logRecord.logKeeper;
+import logRecord.loggerFactory;
+import track.Track;
+
+<span class="nc" id="L16">public class AtomGame {</span>
+	// Abstraction function:
+	// AF是一个保存着原子轨道信息和电子核子信息的抽象数据型到真实的原子的映射
+
+	// Representation invariant:
+	// Nucleus!=null
+	// trackNum!=null
+	// atomCircularOrbit!=null
+
+	// Safety from rep exposure:
+	// 设置关键数据trackNum，Nucleus，atomCircularOrbit为private
+	// 在有必要的时候使用防御性拷贝
+	private Integer trackNum;
+<span class="nc" id="L29">	private final TransitCareTaker transitCareTaker = new TransitCareTaker();</span>
+<span class="nc" id="L30">	private AtomCircularOrbit atomCircularOrbit = null;</span>
+<span class="nc" id="L31">	private final AtomCircularOrbitBuilder atomOrbitBuilder = new AtomCircularOrbitBuilder();</span>
+<span class="nc" id="L32">	private static Logger LOGGER = loggerFactory.createLogger(AtomGame.class);</span>
+	private logKeeper LOGKEEPER;
+<span class="nc" id="L34">	private final int[] DefaultRadius = new int[10];</span>
+
+	/**
+	 * 菜单
+	 */
+	public void GameMenu() {
+<span class="nc" id="L40">		System.out.println(&quot;1.\t读取文件构造系统&quot;);</span>
+<span class="nc" id="L41">		System.out.println(&quot;2.\t跃迁&quot;);</span>
+<span class="nc" id="L42">		System.out.println(&quot;3.\t回退&quot;);</span>
+<span class="nc" id="L43">		System.out.println(&quot;4.\t可视化&quot;);</span>
+<span class="nc" id="L44">		System.out.println(&quot;5.\t打印轨道结构&quot;);</span>
+<span class="nc" id="L45">		System.out.println(&quot;6.\t增加新轨道&quot;);</span>
+<span class="nc" id="L46">		System.out.println(&quot;7.\t增加新电子&quot;);</span>
+<span class="nc" id="L47">		System.out.println(&quot;8.\t删除电子&quot;);</span>
+<span class="nc" id="L48">		System.out.println(&quot;9.\t删除整条轨道&quot;);</span>
+<span class="nc" id="L49">		System.out.println(&quot;10.\t计算熵值&quot;);</span>
+<span class="nc" id="L50">		System.out.println(&quot;11.\t日志查询&quot;);</span>
+<span class="nc" id="L51">		System.out.println(&quot;end.\t 结束&quot;);</span>
+<span class="nc" id="L52">	}</span>
+
+	/**
+	 * 主体
+	 * 
+	 * @throws IOException
+	 */
+	public void gameMain() throws IOException {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">		for (int i = 0; i &lt; 10; i++) {</span>
+<span class="nc" id="L61">			DefaultRadius[i] = 50 + 100 * i;</span>
+		}
+		String inputString;
+		String[] arguments;
+<span class="nc" id="L65">		boolean exitflag = false;</span>
+<span class="nc" id="L66">		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));</span>
+		while (true) {
+<span class="nc" id="L68">			GameMenu();</span>
+<span class="nc" id="L69">			String input = reader.readLine();</span>
+<span class="nc bnc" id="L70" title="All 13 branches missed.">			switch (input) {</span>
+			case &quot;1&quot;:// 读取文件
+				try {
+<span class="nc" id="L73">					System.out.println(&quot;输入需要读取的文件名：例如AtomicStructure.txt\n&quot;);</span>
+<span class="nc" id="L74">					inputString = reader.readLine();</span>
+<span class="nc" id="L75">					atomOrbitBuilder.createFromFile(&quot;src/txt/&quot; + inputString);</span>
+//					atomCircularOrbit =atomOrbitBuilder.createFromFile(&quot;src/txt/&quot; + &quot;exception/Atom1.txt&quot;);
+<span class="nc" id="L77">					atomCircularOrbit = (AtomCircularOrbit) atomOrbitBuilder.getConcreteCircularOrbit();</span>
+<span class="nc" id="L78">				} catch (illegalTextGrammarException | IOException | NumberFormatException | logicalErrorException e) {</span>
+<span class="nc" id="L79">					LOGGER.error(e.getMessage());</span>
+<span class="nc" id="L80">					System.out.println(&quot;请重新读取文件&quot;);</span>
+<span class="nc" id="L81">					break;</span>
+				}
+<span class="nc" id="L83">				System.out.println(atomCircularOrbit.toString());</span>
+<span class="nc" id="L84">				trackNum = atomCircularOrbit.getTrackNum();</span>
+<span class="nc" id="L85">				LOGGER.debug(&quot;文件读取成功&quot;);</span>
+<span class="nc" id="L86">				break;</span>
+			case &quot;2&quot;:// 跃迁
+<span class="nc" id="L88">				System.out.println(&quot;输入跃迁的起始轨道和终止轨道&quot;);</span>
+<span class="nc" id="L89">				System.out.println(&quot;输入范围为0——&quot; + (trackNum - 1));</span>
+<span class="nc" id="L90">				inputString = reader.readLine();</span>
+<span class="nc" id="L91">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L92">				int TrackNum1 = Integer.valueOf(arguments[0]);</span>
+<span class="nc" id="L93">				int TrackNum2 = Integer.valueOf(arguments[1]);</span>
+<span class="nc" id="L94">				Track t1 = atomCircularOrbit.getSortedTracks().get(TrackNum1);</span>
+<span class="nc" id="L95">				Track t2 = atomCircularOrbit.getSortedTracks().get(TrackNum2);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">				if (atomCircularOrbit.transit(t1, t2)) {</span>
+<span class="nc" id="L97">					transitCareTaker.addMemento(new Memento(t1, t2));</span>
+<span class="nc" id="L98">					LOGGER.debug(&quot;跃迁成功:从&quot; + t1.getName() + &quot;到&quot; + t2.getName());</span>
+<span class="nc" id="L99">					System.out.println(atomCircularOrbit.toString());</span>
+<span class="nc" id="L100">				} else {</span>
+<span class="nc" id="L101">					LOGGER.debug(&quot;跃迁失败&quot;);</span>
+				}
+<span class="nc" id="L103">				break;</span>
+			case &quot;3&quot;:// 回退
+<span class="nc" id="L105">				Memento m = transitCareTaker.getMemento();</span>
+<span class="nc" id="L106">				Track fromTrack = m.getToTrack();</span>
+<span class="nc" id="L107">				Track toTrack = m.getFromTrack();</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">				if (atomCircularOrbit.transit(fromTrack, toTrack)) {</span>
+<span class="nc" id="L109">					LOGGER.debug(&quot;回退成功&quot;);</span>
+<span class="nc" id="L110">					System.out.println(atomCircularOrbit.toString());</span>
+<span class="nc" id="L111">				} else {</span>
+<span class="nc" id="L112">					LOGGER.debug(&quot;回退失败&quot;);</span>
+				}
+<span class="nc" id="L114">				break;</span>
+			case &quot;4&quot;:// 可视化
+<span class="nc" id="L116">				LOGGER.debug(&quot;可视化完成&quot;);</span>
+<span class="nc" id="L117">				CircularOrbitAPIs.visualize(atomCircularOrbit);</span>
+<span class="nc" id="L118">				break;</span>
+			case &quot;5&quot;:// 文字输出
+<span class="nc" id="L120">				LOGGER.debug(&quot;文字输出完成&quot;);</span>
+<span class="nc" id="L121">				System.out.println(atomCircularOrbit.toString());</span>
+<span class="nc" id="L122">				break;</span>
+			case &quot;6&quot;:// 增加新轨道
+<span class="nc" id="L124">				System.out.println(&quot;增加新轨道\n&quot;);</span>
+<span class="nc" id="L125">				trackNum++;</span>
+<span class="nc" id="L126">				atomCircularOrbit.addTrack(new Track(&quot;track&quot; + (trackNum - 1), DefaultRadius[trackNum - 1]));</span>
+<span class="nc" id="L127">				System.out.println(&quot;轨道数：&quot; + trackNum + &quot;\n&quot;);</span>
+<span class="nc" id="L128">				LOGGER.debug(&quot;轨道增加成功&quot;);</span>
+<span class="nc" id="L129">				System.out.println(atomCircularOrbit.toString());</span>
+<span class="nc" id="L130">				break;</span>
+			case &quot;7&quot;:// 增加新电子
+<span class="nc" id="L132">				System.out.println(&quot;输入需要增加电子的轨道\n&quot;);</span>
+<span class="nc" id="L133">				System.out.println(&quot;输入范围为0——&quot; + (trackNum - 1));</span>
+<span class="nc" id="L134">				inputString = reader.readLine();</span>
+<span class="nc" id="L135">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L136">				int trackIndex1 = Integer.valueOf(arguments[0]);</span>
+<span class="nc" id="L137">				Track t = atomCircularOrbit.getSortedTracks().get(trackIndex1);</span>
+<span class="nc" id="L138">				atomCircularOrbit.addObjectToTrack(t, Particle.getElectron());</span>
+<span class="nc" id="L139">				System.out.println(atomCircularOrbit.toString());</span>
+<span class="nc" id="L140">				LOGGER.debug(&quot;增加成功&quot;);</span>
+<span class="nc" id="L141">				break;</span>
+			case &quot;8&quot;:// 删除电子
+<span class="nc" id="L143">				System.out.println(&quot;输入需要删除电子的轨道\n&quot;);</span>
+<span class="nc" id="L144">				System.out.println(&quot;输入范围为0——&quot; + (trackNum - 1));</span>
+<span class="nc" id="L145">				inputString = reader.readLine();</span>
+<span class="nc" id="L146">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L147">				Track track2 = atomCircularOrbit.getSortedTracks().get(Integer.valueOf(arguments[0]));</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">				if (atomCircularOrbit.removeElectron(track2)) {</span>
+<span class="nc" id="L149">					LOGGER.debug(&quot;删除成功&quot;);</span>
+<span class="nc" id="L150">				} else {</span>
+<span class="nc" id="L151">					LOGGER.debug(&quot;删除失败&quot;);</span>
+				}
+<span class="nc" id="L153">				System.out.println(atomCircularOrbit.toString());</span>
+<span class="nc" id="L154">				break;</span>
+			case &quot;9&quot;:// 删除整条轨道
+<span class="nc" id="L156">				System.out.println(&quot;输入需要删除的轨道\n&quot;);</span>
+<span class="nc" id="L157">				System.out.println(&quot;输入范围为0——&quot; + (trackNum - 1));</span>
+<span class="nc" id="L158">				inputString = reader.readLine();</span>
+<span class="nc" id="L159">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L160">				Track track3 = atomCircularOrbit.getSortedTracks().get(Integer.valueOf(arguments[0]));</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">				if (atomCircularOrbit.removeTrack(track3)) {</span>
+<span class="nc" id="L162">					LOGGER.debug(&quot;删除成功&quot;);</span>
+<span class="nc" id="L163">				} else {</span>
+<span class="nc" id="L164">					LOGGER.debug(&quot;删除失败&quot;);</span>
+				}
+<span class="nc" id="L166">				System.out.println(atomCircularOrbit.toString());</span>
+<span class="nc" id="L167">				trackNum--;</span>
+<span class="nc" id="L168">				break;</span>
+			case &quot;10&quot;:// 计算熵值
+<span class="nc" id="L170">				System.out.println(&quot;信息熵为：&quot; + atomCircularOrbit.getObjectDistributionEntropy() + &quot;\n&quot;);</span>
+<span class="nc" id="L171">				LOGGER.debug(&quot;计算熵值完成&quot;);</span>
+<span class="nc" id="L172">				break;</span>
+			case &quot;11&quot;:// 日志查询
+<span class="nc" id="L174">				LOGKEEPER = new logKeeper();</span>
+<span class="nc" id="L175">				System.out.println(&quot;选择筛选条件：\n&quot;);</span>
+<span class="nc" id="L176">				System.out.println(&quot;1.\t时间段&quot;);</span>
+<span class="nc" id="L177">				System.out.println(&quot;2.\t按类型&quot;);</span>
+<span class="nc" id="L178">				System.out.println(&quot;3.\t按类&quot;);</span>
+<span class="nc" id="L179">				System.out.println(&quot;4.\t按方法&quot;);</span>
+<span class="nc" id="L180">				input = reader.readLine();</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">				if (input != null) {</span>
+<span class="nc" id="L182">					input = input.trim();</span>
+				}else {
+					continue;
+				}
+<span class="nc bnc" id="L186" title="All 5 branches missed.">				switch (input) {</span>
+				case &quot;1&quot;:// 时间段
+<span class="nc" id="L188">					System.out.println(&quot;请输入开始时间，格式参考：2019-05-19 02:05:14&quot;);</span>
+<span class="nc" id="L189">					inputString = reader.readLine();</span>
+<span class="nc" id="L190">					final Instant time1 = Instant.parse(inputString.replace(' ', 'T') + &quot;Z&quot;);</span>
+<span class="nc" id="L191">					System.out.println(&quot;请输入结束时间，格式参考：2019-05-19 02:05:14&quot;);</span>
+<span class="nc" id="L192">					inputString = reader.readLine();</span>
+<span class="nc" id="L193">					final Instant time2 = Instant.parse(inputString.replace(' ', 'T') + &quot;Z&quot;);</span>
+<span class="nc" id="L194">					System.out.println(</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">							LOGKEEPER.getFilterLogs(p -&gt; p.getTime().isAfter(time1) &amp;&amp; p.getTime().isBefore(time2)));</span>
+<span class="nc" id="L196">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L197">					break;</span>
+				case &quot;2&quot;:// 按类型
+<span class="nc" id="L199">					System.out.println(&quot;请输入类型：ERROR或DEBUG&quot;);</span>
+<span class="nc" id="L200">					inputString = reader.readLine();</span>
+<span class="nc" id="L201">					final String input1 = new String(inputString);</span>
+<span class="nc" id="L202">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getLogType().equals(input1)));</span>
+<span class="nc" id="L203">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L204">					break;</span>
+				case &quot;3&quot;:// 按类
+<span class="nc" id="L206">					System.out.println(&quot;请输入类名&quot;);</span>
+<span class="nc" id="L207">					inputString = reader.readLine();</span>
+<span class="nc" id="L208">					final String input2 = new String(inputString);</span>
+<span class="nc" id="L209">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getClassName().equals(input2)));</span>
+<span class="nc" id="L210">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L211">					break;</span>
+				case &quot;4&quot;:// 按方法
+<span class="nc" id="L213">					System.out.println(&quot;请输入方法名&quot;);</span>
+<span class="nc" id="L214">					inputString = reader.readLine();</span>
+<span class="nc" id="L215">					final String input3 = new String(inputString);</span>
+<span class="nc" id="L216">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getMethodName().equals(input3)));</span>
+<span class="nc" id="L217">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L218">					break;</span>
+				default:
+<span class="nc" id="L220">					LOGGER.debug(&quot;输入错误&quot;);</span>
+					break;
+
+				}
+
+<span class="nc" id="L225">				break;</span>
+			case &quot;end&quot;:// 结束游戏
+<span class="nc" id="L227">				LOGGER.debug(&quot;游戏结束&quot;);</span>
+<span class="nc" id="L228">				exitflag = true;</span>
+<span class="nc" id="L229">				break;</span>
+			default:
+<span class="nc" id="L231">				LOGGER.debug(&quot;输入错误&quot;);</span>
+				break;
+			}
+<span class="nc bnc" id="L234" title="All 2 branches missed.">			if (exitflag)</span>
+				break;
+		}
+<span class="nc" id="L237">	}</span>
+
+	public static void main(String[] args) throws IOException {
+<span class="nc" id="L240">		new AtomGame().gameMain();</span>
+<span class="nc" id="L241">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

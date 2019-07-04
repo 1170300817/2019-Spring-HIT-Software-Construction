@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TrackTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">track</a> &gt; <span class="el_source">TrackTest.java</span></div><h1>TrackTest.java</h1><pre class="source lang-java linenums">package track;
+
+import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Test;
+
+<span class="fc" id="L10">public class TrackTest {</span>
+	// Testing strategy:
+	// 覆盖所有重要方法，尽可能覆盖所有分支
+	@Test
+	public void compareToTest() {
+<span class="fc" id="L15">		Track t1 = new Track(&quot;a&quot;, 50);</span>
+<span class="fc" id="L16">		Track t2 = new Track(&quot;b&quot;, 150);</span>
+<span class="fc" id="L17">		Track t3 = new Track(&quot;c&quot;, 250);</span>
+<span class="fc" id="L18">		Track t4 = new Track(&quot;d&quot;, 350);</span>
+<span class="fc" id="L19">		List&lt;Track&gt; tracks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L20">		tracks.add(t3);</span>
+<span class="fc" id="L21">		tracks.add(t4);</span>
+<span class="fc" id="L22">		tracks.add(t1);</span>
+<span class="fc" id="L23">		tracks.add(t2);</span>
+<span class="fc" id="L24">		assertEquals(&quot;c&quot;, tracks.get(0).getName());</span>
+<span class="fc" id="L25">		Collections.sort(tracks);</span>
+<span class="fc" id="L26">		assertEquals(&quot;a&quot;, tracks.get(0).getName());</span>
+
+<span class="fc" id="L28">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

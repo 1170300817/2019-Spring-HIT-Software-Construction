@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>CircularOrbitBuilder.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">circularOrbit</a> &gt; <span class="el_source">CircularOrbitBuilder.java</span></div><h1>CircularOrbitBuilder.java</h1><pre class="source lang-java linenums">package circularOrbit;
+
+import java.util.List;
+import java.util.Map;
+
+import phsicalObject.PhysicalObject;
+import track.Track;
+
+<span class="fc" id="L9">public abstract class CircularOrbitBuilder&lt;L, E extends PhysicalObject&gt; {</span>
+	protected ConcreteCircularOrbit&lt;L, E&gt; concreteCircularOrbit;
+
+	/**
+	 * 返回构造完成的对象
+	 * 
+	 * @return ConcreteCircularOrbit
+	 */
+	public ConcreteCircularOrbit&lt;L, E&gt; getConcreteCircularOrbit() {
+<span class="fc" id="L18">		return concreteCircularOrbit;</span>
+	}
+
+	/**
+	 * 子类实现时创建具体类型的子类
+	 */
+	public abstract void createCircularOrbit();
+
+	/**
+	 * 根据传入的trackList初始化concreteCircularOrbit
+	 * 
+	 * @param trackList
+	 */
+	public void bulidTracks(List&lt;Track&gt; trackList) {
+<span class="fc bfc" id="L32" title="All 2 branches covered.">		for (Track t : trackList) {</span>
+<span class="fc" id="L33">			concreteCircularOrbit.addTrack(t);</span>
+		}
+<span class="fc" id="L35">	}</span>
+
+	/**
+	 * 根据传入的centralObj和ObjectMap初始化concreteCircularOrbit
+	 * 
+	 * @param centralObj 传入的中心物体
+	 * @param ObjectMap  传入的OrbitMap
+	 */
+	public void bulidPhysicalObjects(L centralObj, Map&lt;Track, List&lt;E&gt;&gt; ObjectMap) {
+<span class="fc" id="L44">		concreteCircularOrbit.setCentralObject(centralObj);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		for (Map.Entry&lt;Track, List&lt;E&gt;&gt; e : ObjectMap.entrySet()) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">			for (E object : e.getValue()) {</span>
+<span class="fc" id="L47">				concreteCircularOrbit.addObjectToTrack(e.getKey(), object);</span>
+			}
+		}
+<span class="fc" id="L50">	}</span>
+	public void bulidPhysicalObjects(Map&lt;Track, List&lt;E&gt;&gt; ObjectMap) {
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		for (Map.Entry&lt;Track, List&lt;E&gt;&gt; e : ObjectMap.entrySet()) {</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">			for (E object : e.getValue()) {</span>
+<span class="fc" id="L54">				concreteCircularOrbit.addObjectToTrack(e.getKey(), object);</span>
+			}
+		}
+<span class="fc" id="L57">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

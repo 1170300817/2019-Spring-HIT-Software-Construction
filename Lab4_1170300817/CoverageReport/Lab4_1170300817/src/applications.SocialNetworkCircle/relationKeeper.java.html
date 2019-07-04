@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>relationKeeper.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.SocialNetworkCircle</a> &gt; <span class="el_source">relationKeeper.java</span></div><h1>relationKeeper.java</h1><pre class="source lang-java linenums">package applications.SocialNetworkCircle;
+
+import java.util.ArrayList;
+import exception.sameLabelException;
+
+/**
+ * @author Administrator 读取文件时用的辅助类：因为读取文件读入的过程没法将读取到的人名
+ *         马上与实例对应起来，所以构造relationKeeper保存每个关系的人名string。
+ */
+public class relationKeeper {
+	private final String fromString;
+	private final String toString;
+	private final double weight;
+<span class="fc" id="L14">	private static final ArrayList&lt;relationKeeper&gt; keeperList = new ArrayList&lt;relationKeeper&gt;();</span>
+
+	public String getFromString() {
+<span class="fc" id="L17">		return fromString;</span>
+	}
+
+	public String getToString() {
+<span class="fc" id="L21">		return toString;</span>
+	}
+
+	public double getWeight() {
+<span class="fc" id="L25">		return weight;</span>
+	}
+
+	/**
+	 * 构造方法
+	 * 
+	 * @param fromString
+	 * @param toString
+	 * @param weight
+	 * @throws sameLabelException
+	 */
+	public relationKeeper(String fromString, String toString, double weight) throws  sameLabelException{
+<span class="fc" id="L37">		super();</span>
+<span class="fc" id="L38">		this.fromString = fromString;</span>
+<span class="fc" id="L39">		this.toString = toString;</span>
+<span class="fc" id="L40">		this.weight = weight;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (fromString.equals(toString)) {</span>
+<span class="fc" id="L42">			throw new sameLabelException(&quot;从&quot; + fromString + &quot;到&quot; + toString + &quot;的边无效&quot;);</span>
+		}
+<span class="fc bfc" id="L44" title="All 2 branches covered.">		for (relationKeeper k : keeperList) {</span>
+<span class="fc bfc" id="L45" title="All 4 branches covered.">			if (k.getFromString().equals(toString) &amp;&amp; k.getToString().equals(fromString)) {</span>
+<span class="fc" id="L46">				throw new sameLabelException(&quot;从&quot; + fromString + &quot;到&quot; + toString + &quot;的边已经存在&quot;);</span>
+			}
+<span class="fc bfc" id="L48" title="All 4 branches covered.">			if (k.getFromString().equals(fromString) &amp;&amp; k.getToString().equals(toString)) {</span>
+<span class="fc" id="L49">				throw new sameLabelException(&quot;从&quot; + fromString + &quot;到&quot; + toString + &quot;的边已经存在&quot;);</span>
+			}
+		}
+<span class="fc" id="L52">		keeperList.add(this);</span>
+<span class="fc" id="L53">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

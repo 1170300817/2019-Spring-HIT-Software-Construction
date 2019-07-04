@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>PersonTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">applications.SocialNetworkCircle</a> &gt; <span class="el_source">PersonTest.java</span></div><h1>PersonTest.java</h1><pre class="source lang-java linenums">package applications.SocialNetworkCircle;
+
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import exception.illegalParameterException;
+import exception.sameLabelException;
+
+<span class="fc" id="L10">public class PersonTest {</span>
+	@Test
+	public void personTest() {
+<span class="fc" id="L13">		Person p = null;</span>
+		try {
+<span class="fc" id="L15">			p = Person.getInstance(&quot;aaa&quot;, 16, &quot;M&quot;);</span>
+<span class="pc bpc" id="L16" title="1 of 2 branches missed.">			assertTrue(p.getAge() == 16);</span>
+<span class="fc" id="L17">			assertTrue(p.getGender().equals(&quot;M&quot;));</span>
+<span class="pc" id="L18">		} catch (sameLabelException | illegalParameterException e) {</span>
+<span class="nc" id="L19">			e.printStackTrace();</span>
+		}
+<span class="fc" id="L21">	}</span>
+
+	@Test
+	public void personeEX1Test() {
+		try {
+<span class="nc" id="L26">			Person.getInstance(&quot;,.a&quot;, 16, &quot;M&quot;);</span>
+<span class="pc" id="L27">		} catch (illegalParameterException | sameLabelException e) {</span>
+<span class="fc" id="L28">			assertTrue(e.getMessage().contains(&quot;人物名字错误&quot;));</span>
+		}
+<span class="fc" id="L30">	}</span>
+
+	@Test
+	public void personeEX2Test() {
+		try {
+<span class="nc" id="L35">			Person.getInstance(&quot;aas&quot;, 16, &quot;S&quot;);</span>
+<span class="pc" id="L36">		} catch (illegalParameterException | sameLabelException e) {</span>
+<span class="fc" id="L37">			assertTrue(e.getMessage().contains(&quot;人物性别错误&quot;));</span>
+		}
+<span class="fc" id="L39">	}</span>
+
+	@Test
+	public void personeEX3Test() {
+		try {
+<span class="nc" id="L44">			Person.getInstance(&quot;aax&quot;, 1111, &quot;M&quot;);</span>
+<span class="pc" id="L45">		} catch (illegalParameterException | sameLabelException e) {</span>
+<span class="fc" id="L46">			assertTrue(e.getMessage().contains(&quot;人物年龄错误&quot;));</span>
+		}
+<span class="fc" id="L48">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

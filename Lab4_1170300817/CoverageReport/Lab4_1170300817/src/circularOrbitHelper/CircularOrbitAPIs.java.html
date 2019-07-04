@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>CircularOrbitAPIs.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">circularOrbitHelper</a> &gt; <span class="el_source">CircularOrbitAPIs.java</span></div><h1>CircularOrbitAPIs.java</h1><pre class="source lang-java linenums">package circularOrbitHelper;
+
+import circularOrbit.CircularOrbit;
+import difference.Difference;
+
+<span class="nc" id="L6">public class CircularOrbitAPIs {</span>
+	// Abstraction function:
+	// 是一个circularOrbit的某些功能的调用者
+
+	// Representation invariant:
+	// circularOrbit不能是null
+
+	// Safety from rep exposure:
+	// 在有必要的时候使用防御性拷贝
+
+	/**
+	 * 可视化
+	 * 
+	 * @param c
+	 */
+	public static &lt;L, E&gt; void visualize(CircularOrbit&lt;L, E&gt; c) {
+<span class="fc" id="L22">		c.drawpicture();</span>
+<span class="fc" id="L23">	}</span>
+
+	/**
+	 * 计算信息熵
+	 * 
+	 * @param c 需要计算的Orbit
+	 * @return 信息熵
+	 */
+	public static &lt;L, E&gt; double getObjectDistributionEntropy(CircularOrbit&lt;L, E&gt; c) {
+<span class="fc" id="L32">		return c.getObjectDistributionEntropy();</span>
+	}
+
+	/**
+	 * 计算物体间逻辑距离
+	 * 
+	 * @param c需要计算的Orbit
+	 * @param e1          物体1
+	 * @param e2          物体2
+	 * @return
+	 */
+	public static &lt;L, E&gt; int getLogicalDistance(CircularOrbit&lt;L, E&gt; c, E e1, E e2) {
+<span class="fc" id="L44">		return c.getLogicalDistance(e1, e2);</span>
+	}
+
+	/**
+	 * 获得两系统间的不同
+	 * 
+	 * @param c1 需要比较的Orbit
+	 * @param c2 需要比较的Orbit
+	 * @return Difference对象记录不同之处
+	 */
+	public static &lt;L, E&gt; Difference getDifference(CircularOrbit&lt;L, E&gt; c1, CircularOrbit&lt;L, E&gt; c2) {
+<span class="fc" id="L55">		return c1.getDifference(c2);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

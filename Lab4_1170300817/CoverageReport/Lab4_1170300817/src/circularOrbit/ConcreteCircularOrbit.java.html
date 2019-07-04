@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>ConcreteCircularOrbit.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">circularOrbit</a> &gt; <span class="el_source">ConcreteCircularOrbit.java</span></div><h1>ConcreteCircularOrbit.java</h1><pre class="source lang-java linenums">package circularOrbit;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.*;
+import java.lang.Math;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import difference.Difference;
+import exception.objectNoFoundException;
+import phsicalObject.PhysicalObject;
+import track.Track;
+
+<span class="pc bpc" id="L15" title="1 of 2 branches missed.">public class ConcreteCircularOrbit&lt;L, E extends PhysicalObject&gt; implements CircularOrbit&lt;L, E&gt; {</span>
+	// Abstraction function:
+	// ConcreteCircularOrbit&lt;L, E&gt;是一个由多个Track，多个轨道物体和中心物体组成的对轨道结构的抽象
+	// OrbitMap抽象轨道和物体的一对多的关系
+	// 所以AF是CircularOrbit&lt;L, E&gt;到真实的轨道结构的映射
+
+	// Representation invariant:
+	// 轨道不能重名，不能有轨道具有相同半径
+
+	// Safety from rep exposure:
+	// 设置关键数据OrbitMap，centralRelationMap，trackRelationMap为protected final
+	// 在有必要的时候使用防御性拷贝
+<span class="fc" id="L27">	private L centralObject = null;</span>
+<span class="fc" id="L28">	protected final Map&lt;Track, List&lt;E&gt;&gt; OrbitMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L29">	protected final Map&lt;E, Double&gt; centralRelationMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L30">	protected final Map&lt;E, Map&lt;E, Double&gt;&gt; trackRelationMap = new HashMap&lt;&gt;();</span>
+
+	/**
+	 * 设置中心物体
+	 * 
+	 * @param centralObject
+	 */
+	public void setCentralObject(L centralObject) {
+<span class="fc" id="L38">		this.centralObject = centralObject;</span>
+<span class="fc" id="L39">	}</span>
+
+	/**
+	 * 返回中心物体
+	 * 
+	 * @return 中心物体
+	 */
+	public L getCentralObject() {
+<span class="fc" id="L47">		return centralObject;</span>
+	}
+
+	/**
+	 * 增加一条轨道
+	 * 
+	 * @param t
+	 * @return
+	 */
+	public boolean addTrack(Track t) {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">		if (OrbitMap.containsKey(t)) {</span>
+<span class="fc" id="L58">			return false;</span>
+		} else {
+<span class="fc" id="L60">			OrbitMap.put(t, new ArrayList&lt;E&gt;());</span>
+<span class="fc" id="L61">			return true;</span>
+		}
+	}
+
+	/**
+	 * 删除一条轨道
+	 * 
+	 * @param t
+	 * @return 成功返回true 否则false
+	 */
+	public boolean removeTrack(Track t) {
+<span class="pc bpc" id="L72" title="2 of 4 branches missed.">		assert t != null;</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		if (OrbitMap.containsKey(t)) {</span>
+<span class="fc" id="L74">			OrbitMap.remove(t);</span>
+<span class="fc" id="L75">			return true;</span>
+		} else {
+//			System.err.println(&quot;想移除的轨道不存在&quot;);
+<span class="fc" id="L78">			return false;</span>
+		}
+	}
+
+	/**
+	 * 返回轨道数目
+	 * 
+	 * @return
+	 */
+	@Override
+	public Integer getTrackNum() {
+<span class="fc" id="L89">		return OrbitMap.keySet().size();</span>
+	}
+
+	/**
+	 * 向轨道上增加物体
+	 * 
+	 * @param t      目标轨道
+	 * @param object 增加的物体
+	 * @return
+	 */
+	public boolean addObjectToTrack(Track t, E object) {
+<span class="pc bpc" id="L100" title="2 of 4 branches missed.">		assert t != null;</span>
+<span class="pc bpc" id="L101" title="2 of 4 branches missed.">		assert object != null;</span>
+<span class="fc" id="L102">		return OrbitMap.get(t).add(object);</span>
+	}
+
+	/**
+	 * 删去一个轨道上的某个物体
+	 * 
+	 * @param t
+	 * @param object
+	 * @return 成功返回true 否则false
+	 */
+	public boolean removeObjectOnTrack(Track t, E object) {
+<span class="pc bpc" id="L113" title="2 of 4 branches missed.">		assert t != null;</span>
+<span class="pc bpc" id="L114" title="2 of 4 branches missed.">		assert object!= null;</span>
+<span class="fc" id="L115">		return OrbitMap.get(t).remove(object);</span>
+		
+
+	}
+
+	/**
+	 * 在两个轨道物体之间新增关系
+	 * 
+	 * @param object1
+	 * @param object2
+	 * @param distance
+	 * @return 成功返回true 否则false
+	 */
+	public boolean addtrackRelation(E object1, E object2, double distance) {
+<span class="pc bpc" id="L129" title="2 of 4 branches missed.">		assert object1 != null;</span>
+<span class="pc bpc" id="L130" title="2 of 4 branches missed.">		assert object2 != null;</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">		if (!trackRelationMap.containsKey(object1)) {</span>
+<span class="fc" id="L132">			trackRelationMap.put(object1, new HashMap&lt;E, Double&gt;());</span>
+		}
+<span class="fc bfc" id="L134" title="All 2 branches covered.">		if (!trackRelationMap.containsKey(object2)) {</span>
+<span class="fc" id="L135">			trackRelationMap.put(object2, new HashMap&lt;E, Double&gt;());</span>
+		}
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		if (distance == 0) {</span>
+<span class="fc" id="L138">			trackRelationMap.get(object1).remove(object2);</span>
+<span class="fc" id="L139">			trackRelationMap.get(object2).remove(object1);</span>
+<span class="fc" id="L140">			return true;</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">		} else if (trackRelationMap.get(object1).containsKey(object2)) {</span>
+<span class="nc" id="L142">			return false;</span>
+		} else {
+<span class="fc" id="L144">			trackRelationMap.get(object1).put(object2, distance);</span>
+<span class="fc" id="L145">			return true;</span>
+		}
+	}
+
+	/**
+	 * 在轨道物体和中心物体之间新增关系
+	 * 
+	 * @param object
+	 * @param distance
+	 * @return 成功返回true 否则false
+	 */
+	public boolean addcentralRelation(E object, double distance) {
+<span class="pc bpc" id="L157" title="2 of 4 branches missed.">		assert object != null;</span>
+
+<span class="fc bfc" id="L159" title="All 2 branches covered.">		if (!trackRelationMap.containsKey(object)) {</span>
+<span class="fc" id="L160">			trackRelationMap.put(object, new HashMap&lt;E, Double&gt;());</span>
+		}
+<span class="fc bfc" id="L162" title="All 2 branches covered.">		if (distance == 0) {</span>
+<span class="fc" id="L163">			centralRelationMap.remove(object);</span>
+<span class="fc" id="L164">			return true;</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">		} else if (centralRelationMap.containsKey(object)) {</span>
+<span class="nc" id="L166">			return false;</span>
+		} else {
+<span class="fc" id="L168">			centralRelationMap.put(object, distance);</span>
+<span class="fc" id="L169">			return true;</span>
+		}
+
+	}
+
+	/**
+	 * 计算轨道系统的信息熵
+	 * 
+	 * @return 信息熵
+	 */
+	public double getObjectDistributionEntropy() {
+<span class="fc" id="L180">		double Entropy = 0.0;</span>
+<span class="fc" id="L181">		int number = OrbitMap.keySet().size();</span>
+<span class="fc" id="L182">		int i = 0, sum = 0;</span>
+
+<span class="fc" id="L184">		List&lt;Integer&gt; P = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">		for (List&lt;E&gt; list : OrbitMap.values()) {</span>
+<span class="fc" id="L186">			P.add(list.size());</span>
+<span class="fc" id="L187">			sum += list.size();</span>
+		}
+<span class="fc bfc" id="L189" title="All 2 branches covered.">		for (i = 0; i &lt; number; i++) {</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">			if (P.get(i) != 0) {</span>
+<span class="fc" id="L191">				Entropy -= (P.get(i) * 1.0 / sum) * Math.log(P.get(i) * 1.0 / sum) / Math.log(2);</span>
+			}
+		}
+<span class="fc" id="L194">		return Entropy;</span>
+	}
+
+	/**
+	 * 获得两物体间逻辑距离
+	 * 
+	 * @param e1
+	 * @param e2
+	 * @return 逻辑距离
+	 */
+	public int getLogicalDistance(E e1, E e2) {
+<span class="pc bpc" id="L205" title="2 of 4 branches missed.">		assert e1 != null;</span>
+<span class="pc bpc" id="L206" title="2 of 4 branches missed.">		assert e2 != null;</span>
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">		if (e1 == e2) {</span>
+<span class="nc" id="L208">			return 0;</span>
+		}
+
+<span class="fc" id="L211">		Queue&lt;E&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L212">		Map&lt;E, Integer&gt; distantMap = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L213">		queue.offer(e1);</span>
+<span class="fc" id="L214">		distantMap.put(e1, 0);</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">		while (!queue.isEmpty()) {</span>
+<span class="fc" id="L216">			E topObject = queue.poll();</span>
+<span class="fc" id="L217">			int nowDis = distantMap.get(topObject);</span>
+<span class="fc" id="L218">			Map&lt;E, Double&gt; friendList = trackRelationMap.get(topObject);</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">			for (Map.Entry&lt;E, Double&gt; entry : friendList.entrySet())</span>
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">				if (!distantMap.containsKey(entry.getKey())) {</span>
+<span class="fc" id="L221">					distantMap.put(entry.getKey(), nowDis + 1);</span>
+<span class="fc" id="L222">					queue.offer(entry.getKey());</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">					if (entry.getKey() == e2) {</span>
+<span class="fc" id="L224">						return distantMap.get(e2);</span>
+					}
+				}
+		}
+<span class="fc" id="L228">		return Integer.MAX_VALUE;</span>
+	}
+
+	/**
+	 * 比较当前orbit和目标orbit的不同
+	 * 
+	 * @param c 目标orbit
+	 * @return 一个different对象，记录两个orbit的区别
+	 */
+	public Difference getDifference(CircularOrbit&lt;L, E&gt; that) {
+<span class="fc" id="L238">		Integer trackNumDiff = null;</span>
+<span class="fc" id="L239">		List&lt;Integer&gt; NumDiff = new ArrayList&lt;Integer&gt;();</span>
+<span class="fc" id="L240">		List&lt;List&lt;Set&lt;String&gt;&gt;&gt; ObjectDiff = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L242">		trackNumDiff = this.getTrackNum() - that.getTrackNum();</span>
+<span class="fc" id="L243">		List&lt;Track&gt; SortedTracks1 = this.getSortedTracks();</span>
+<span class="fc" id="L244">		List&lt;Track&gt; SortedTracks2 = that.getSortedTracks();</span>
+<span class="fc" id="L245">		int i = 0;</span>
+
+<span class="fc bfc" id="L247" title="All 4 branches covered.">		while (i &lt; SortedTracks1.size() &amp;&amp; i &lt; SortedTracks2.size()) {</span>
+
+<span class="fc" id="L249">			ObjectDiff.add(new ArrayList&lt;Set&lt;String&gt;&gt;());</span>
+<span class="fc" id="L250">			ObjectDiff.get(i).add(new HashSet&lt;String&gt;());</span>
+<span class="fc" id="L251">			ObjectDiff.get(i).add(new HashSet&lt;String&gt;());</span>
+
+<span class="fc" id="L253">			NumDiff.add(</span>
+<span class="fc" id="L254">					this.getObjectNumonTrack(SortedTracks1.get(i)) - that.getObjectNumonTrack(SortedTracks2.get(i)));</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">			for (E currentObj : this.getObjectonTrack(SortedTracks1.get(i))) {</span>
+<span class="fc bfc" id="L256" title="All 2 branches covered.">				if (!that.getObjectonTrack(SortedTracks2.get(i)).contains(currentObj)) {</span>
+<span class="fc" id="L257">					ObjectDiff.get(i).get(0).add(currentObj.getName());</span>
+				}
+			}
+<span class="fc bfc" id="L260" title="All 2 branches covered.">			for (E currentObj : that.getObjectonTrack(SortedTracks2.get(i))) {</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">				if (!this.getObjectonTrack(SortedTracks1.get(i)).contains(currentObj)) {</span>
+<span class="fc" id="L262">					ObjectDiff.get(i).get(1).add(currentObj.getName());</span>
+				}
+			}
+<span class="fc" id="L265">			i++;</span>
+		}
+<span class="fc bfc" id="L267" title="All 2 branches covered.">		while (i &lt; SortedTracks1.size()) {</span>
+<span class="fc" id="L268">			NumDiff.add(this.getObjectNumonTrack(SortedTracks1.get(i)));</span>
+
+<span class="fc" id="L270">			ObjectDiff.add(new ArrayList&lt;Set&lt;String&gt;&gt;());</span>
+<span class="fc" id="L271">			ObjectDiff.get(i).add(new HashSet&lt;String&gt;());</span>
+<span class="fc" id="L272">			ObjectDiff.get(i).add(new HashSet&lt;String&gt;());</span>
+
+<span class="fc bfc" id="L274" title="All 2 branches covered.">			for (E currentObj : this.getObjectonTrack(SortedTracks1.get(i))) {</span>
+<span class="fc" id="L275">				ObjectDiff.get(i).get(0).add(currentObj.getName());</span>
+			}
+<span class="fc" id="L277">			i++;</span>
+		}
+<span class="fc bfc" id="L279" title="All 2 branches covered.">		while (i &lt; SortedTracks2.size()) {</span>
+<span class="fc" id="L280">			NumDiff.add(-that.getObjectNumonTrack(SortedTracks2.get(i)));</span>
+
+<span class="fc" id="L282">			ObjectDiff.add(new ArrayList&lt;Set&lt;String&gt;&gt;());</span>
+<span class="fc" id="L283">			ObjectDiff.get(i).add(new HashSet&lt;String&gt;());</span>
+<span class="fc" id="L284">			ObjectDiff.get(i).add(new HashSet&lt;String&gt;());</span>
+
+<span class="fc bfc" id="L286" title="All 2 branches covered.">			for (E currentObj : that.getObjectonTrack(SortedTracks2.get(i))) {</span>
+<span class="fc" id="L287">				ObjectDiff.get(i).get(1).add(currentObj.getName());</span>
+			}
+<span class="fc" id="L289">			i++;</span>
+		}
+
+<span class="fc" id="L292">		Difference difference = new Difference(trackNumDiff, NumDiff, ObjectDiff);</span>
+<span class="fc" id="L293">		return difference;</span>
+	}
+
+	/**
+	 * 获得当前orbit包含的所有轨道按半径排列成的链表
+	 * 
+	 * @return 半径有序的Track链表
+	 */
+	public List&lt;Track&gt; getSortedTracks() {
+<span class="fc" id="L302">		List&lt;Track&gt; listTracks = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">		for (Track t : OrbitMap.keySet())</span>
+<span class="fc" id="L304">			listTracks.add(t);</span>
+<span class="fc" id="L305">		Collections.sort(listTracks);</span>
+<span class="fc" id="L306">		return listTracks;</span>
+	}
+
+	public Integer getObjectNumonTrack(Track t) {
+<span class="fc" id="L310">		return OrbitMap.get(t).size();</span>
+	}
+
+	/**
+	 * 可视化方法
+	 */
+	@Override
+	public void drawpicture() {
+<span class="fc" id="L318">		JFrame frame = new JFrame();</span>
+<span class="fc" id="L319">		String TITLE = &quot;可视化&quot;;</span>
+<span class="fc" id="L320">		int WIDTH = 800;</span>
+<span class="fc" id="L321">		int HEIGHT = 800;</span>
+<span class="fc" id="L322">		JPanel jpanel = new JPanel() {</span>
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void paint(Graphics graphics) {
+<span class="fc" id="L327">				super.paint(graphics);</span>
+
+<span class="pc bpc" id="L329" title="1 of 2 branches missed.">				for (Track t : OrbitMap.keySet()) {</span>
+<span class="fc" id="L330">					int R = (int) t.getRadius(); </span>
+<span class="fc" id="L331">					graphics.drawOval(400 - (int) (0.5 * R), 400 - (int) (0.5 * R), R, R);</span>
+<span class="fc" id="L332">					int objectNum = getObjectNumonTrack(t);</span>
+<span class="pc bpc" id="L333" title="1 of 2 branches missed.">					double angle = objectNum == 0 ? 0 : 360.0 / (double)objectNum;</span>
+<span class="fc" id="L334">					int i = 1;</span>
+<span class="pc bpc" id="L335" title="1 of 2 branches missed.">					for (PhysicalObject p : getObjectonTrack(t)) {</span>
+<span class="fc" id="L336">						int x = (int) (400 + 0.5 * R * Math.cos(Math.PI * i * angle / 180));</span>
+<span class="fc" id="L337">						int y = (int) (400 + 0.5 * R * Math.sin(Math.PI * i * angle / 180));</span>
+<span class="fc" id="L338">						graphics.setColor(Color.BLUE);</span>
+<span class="fc" id="L339">						graphics.drawOval(x - 5, y - 5, 10, 10);</span>
+<span class="fc" id="L340">						graphics.fillOval(x - 5, y - 5, 10, 10);</span>
+<span class="nc" id="L341">						graphics.drawString(p.getName(), x + 5, y);</span>
+<span class="nc" id="L342">						i++;</span>
+<span class="nc" id="L343">						graphics.setColor(Color.BLACK);</span>
+					}
+				}
+<span class="nc" id="L346">				graphics.setColor(Color.RED);</span>
+<span class="nc" id="L347">				graphics.drawOval(400 - 10, 400 - 10, 20, 20);</span>
+<span class="nc" id="L348">				graphics.fillOval(400 - 10, 400 - 10, 20, 20);</span>
+<span class="nc" id="L349">			}</span>
+		};
+<span class="fc" id="L351">		frame.add(jpanel);</span>
+<span class="fc" id="L352">		frame.setTitle(TITLE);</span>
+<span class="fc" id="L353">		frame.setSize(WIDTH, HEIGHT);</span>
+<span class="fc" id="L354">		frame.setVisible(true);</span>
+<span class="fc" id="L355">	}</span>
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see circularOrbit.CircularOrbit#getObjectonTrack(track.Track)
+	 */
+	@Override
+	public List&lt;E&gt; getObjectonTrack(Track t) {
+<span class="pc bpc" id="L364" title="2 of 4 branches missed.">		assert t != null;</span>
+<span class="fc" id="L365">		return OrbitMap.get(t);</span>
+	}
+
+//	public static void main(String[] args) {
+//		CircularOrbit&lt;CentralObject, PhysicalObject&gt; circular = new ConcreteCircularOrbit&lt;CentralObject, PhysicalObject&gt;();
+//		CentralObject center = new CentralObject(&quot;sun&quot;);
+//		Track t1 = new Track(&quot;track1&quot;, 100);
+//		Track t2 = new Track(&quot;track2&quot;, 200);
+//		Track t3 = new Track(&quot;track3&quot;, 300);
+//		PhysicalObject ob1 = new PhysicalObject(&quot;object1&quot;);
+//		PhysicalObject ob2 = new PhysicalObject(&quot;object2&quot;);
+//		PhysicalObject ob3 = new PhysicalObject(&quot;object3&quot;);
+//		PhysicalObject ob4 = new PhysicalObject(&quot;object4&quot;);
+//		PhysicalObject ob5 = new PhysicalObject(&quot;object5&quot;);
+//		PhysicalObject ob6 = new PhysicalObject(&quot;object6&quot;);
+//		PhysicalObject ob7 = new PhysicalObject(&quot;object7&quot;);
+//		PhysicalObject ob8 = new PhysicalObject(&quot;object8&quot;);
+//		PhysicalObject ob9 = new PhysicalObject(&quot;object9&quot;);
+//
+//		circular.setCentralObject(center);
+//		circular.addTrack(t1);
+//		circular.addTrack(t2);
+//		circular.addTrack(t3);
+//		circular.addObjectToTrack(t1, ob1);
+//		circular.addObjectToTrack(t1, ob2);
+//		circular.addObjectToTrack(t1, ob3);
+//		circular.addObjectToTrack(t2, ob4);
+//		circular.addObjectToTrack(t3, ob5);
+//		circular.addObjectToTrack(t3, ob6);
+//		circular.addObjectToTrack(t3, ob7);
+//		circular.addObjectToTrack(t3, ob8);
+//		circular.addObjectToTrack(t3, ob9);
+//		circular.drawpicture();
+//	}
+
+	/**
+	 * 判断当前Orbit是否包含某个元素e
+	 * 
+	 * @param e
+	 * @return 成功返回true 否则false
+	 */
+	@Override
+	public boolean contains(E e) {
+<span class="pc bpc" id="L408" title="2 of 4 branches missed.">		assert e != null;</span>
+
+<span class="pc bpc" id="L410" title="1 of 2 branches missed.">		for (Track t : OrbitMap.keySet()) {</span>
+<span class="fc bfc" id="L411" title="All 2 branches covered.">			if (OrbitMap.get(t).contains(e)) {</span>
+<span class="fc" id="L412">				return true;</span>
+			}
+		}
+<span class="nc" id="L415">		return false;</span>
+	}
+
+	/**
+	 * 返回某个元素e所在的Object对象
+	 * 
+	 * @param e
+	 * @return
+	 * @throws objectNoFoundException
+	 */
+	@Override
+	public Track getObjectTrack(E e) throws objectNoFoundException {
+<span class="pc bpc" id="L427" title="2 of 4 branches missed.">		assert e != null;</span>
+
+<span class="fc bfc" id="L429" title="All 2 branches covered.">		for (Track t : OrbitMap.keySet()) {</span>
+<span class="fc bfc" id="L430" title="All 2 branches covered.">			if (OrbitMap.get(t).contains(e)) {</span>
+<span class="fc" id="L431">				return t;</span>
+			}
+		}
+<span class="fc" id="L434">		throw new objectNoFoundException(&quot;没有找到该物体&quot;);</span>
+	}
+	@Override
+	public Track getObjectTrack(String name) throws objectNoFoundException {
+<span class="fc bfc" id="L438" title="All 2 branches covered.">		for (Track t : OrbitMap.keySet()) {</span>
+<span class="fc bfc" id="L439" title="All 2 branches covered.">			for (PhysicalObject p : OrbitMap.get(t)) {</span>
+<span class="pc bpc" id="L440" title="1 of 2 branches missed.">				if (p.getName().equals(name)) {</span>
+<span class="nc" id="L441">					return t;</span>
+				}
+			}
+		}
+<span class="fc" id="L445">		throw new objectNoFoundException(&quot;没有找到名为&quot; + name + &quot;的物体&quot;);</span>
+	}
+
+	/**
+	 * 返回与中心连接的物体
+	 * 
+	 * @return 物体构成的集合
+	 */
+	public Set&lt;E&gt; getCentralConnectedObject() {
+<span class="fc" id="L454">		return new HashSet&lt;&gt;(centralRelationMap.keySet());</span>
+
+	}
+
+	/**
+	 * 返回与某个轨道物体连接的所有物体
+	 * 
+	 * @return 物体构成的集合
+	 */
+	public Set&lt;E&gt; getTrackConnectedObject(E object) {
+<span class="pc bpc" id="L464" title="2 of 4 branches missed.">		assert object != null;</span>
+<span class="fc" id="L465">		return trackRelationMap.get(object).keySet();</span>
+	}
+
+	public boolean checkRep() {
+<span class="nc bnc" id="L469" title="All 4 branches missed.">		assert centralObject != null;</span>
+<span class="nc bnc" id="L470" title="All 4 branches missed.">		assert centralRelationMap != null;</span>
+<span class="nc bnc" id="L471" title="All 4 branches missed.">		assert trackRelationMap != null;</span>
+<span class="nc bnc" id="L472" title="All 4 branches missed.">		assert OrbitMap != null;</span>
+<span class="nc" id="L473">		return true;</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SocialNetworkGame.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">applications.SocialNetworkCircle</a> &gt; <span class="el_source">SocialNetworkGame.java</span></div><h1>SocialNetworkGame.java</h1><pre class="source lang-java linenums">package applications.SocialNetworkCircle;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import applications.AtomStructure.AtomGame;
+import circularOrbitHelper.CircularOrbitAPIs;
+import exception.illegalParameterException;
+import exception.illegalTextGrammarException;
+import exception.objectNoFoundException;
+import exception.sameLabelException;
+import exception.unDefinedPersonException;
+import logRecord.logKeeper;
+import logRecord.loggerFactory;
+import track.Track;
+
+<span class="nc" id="L24">public class SocialNetworkGame {</span>
+	// Abstraction function:
+	// 所以AF是一个保存着人际关系数据和操作的抽象数据型到真实的人际关系层级管理器的映射
+
+	// Representation invariant:
+	// socialCircularOrbit!=null
+	// centralUser!=null
+
+	// Safety from rep exposure:
+	// 设置关键数据personList，centralUser，socialCircularOrbit为private
+	// 在有必要的时候使用防御性拷贝
+	private Person centralUser;
+<span class="nc" id="L36">	private List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();</span>
+<span class="nc" id="L37">	private SocialNetCircularOrbit socialCircularOrbit = null;</span>
+<span class="nc" id="L38">	private SocialNetCircularOrbitBuilder socialCircularOrbitBuilder = new SocialNetCircularOrbitBuilder();</span>
+<span class="nc" id="L39">	private static Logger LOGGER = loggerFactory.createLogger(AtomGame.class);</span>
+	private logKeeper LOGKEEPER;
+
+<span class="nc" id="L42">	public int[] DefaultRadius = new int[10];</span>
+
+	public void GameMenu() {
+<span class="nc" id="L45">		System.out.println(&quot;1.\t读取文件构造系统&quot;);</span>
+<span class="nc" id="L46">		System.out.println(&quot;2.\t可视化&quot;);</span>
+<span class="nc" id="L47">		System.out.println(&quot;3.\t查询好友位置&quot;);</span>
+<span class="nc" id="L48">		System.out.println(&quot;4.\t打印轨道结构&quot;);</span>
+<span class="nc" id="L49">		System.out.println(&quot;5.\t增加新的朋友&quot;);</span>
+<span class="nc" id="L50">		System.out.println(&quot;6.\t增加新的关系并重新整理&quot;);</span>
+<span class="nc" id="L51">		System.out.println(&quot;7.\t删除一个关系并重新整理&quot;);</span>
+<span class="nc" id="L52">		System.out.println(&quot;8.\t计算熵值&quot;);</span>
+<span class="nc" id="L53">		System.out.println(&quot;9.\t计算信息扩散度&quot;);</span>
+<span class="nc" id="L54">		System.out.println(&quot;10.\t计算两个用户之间的逻辑距离&quot;);</span>
+<span class="nc" id="L55">		System.out.println(&quot;11.\t日志查询&quot;);</span>
+<span class="nc" id="L56">		System.out.println(&quot;end.\t 结束&quot;);</span>
+<span class="nc" id="L57">	}</span>
+
+	public void gameMain() throws IOException {
+		String inputString;
+		String[] arguments;
+		String name1;
+		String name2;
+<span class="nc" id="L64">		Person person1 = null;</span>
+<span class="nc" id="L65">		Person person2 = null;</span>
+<span class="nc" id="L66">		boolean exitflag = false;</span>
+<span class="nc" id="L67">		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));</span>
+		while (true) {
+<span class="nc" id="L69">			GameMenu();</span>
+<span class="nc" id="L70">			String input = reader.readLine();</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">			if (input != null) {</span>
+<span class="nc" id="L72">				input = input.trim();</span>
+			}else {
+				continue;
+			}
+<span class="nc bnc" id="L76" title="All 13 branches missed.">			switch (input) {</span>
+			case &quot;1&quot;:// 读取文件
+				try {
+<span class="nc" id="L79">					System.out.println(&quot;输入需要读取的文件名：例如SocialNetworkCircle.txt\n&quot;);</span>
+<span class="nc" id="L80">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L81">					personList = socialCircularOrbitBuilder.createFromFile(&quot;src/txt/&quot; + inputString);</span>
+//					personList=socialCircularOrbitBuilder.createFromFile(&quot;src/txt/&quot; + &quot;SocialNetworkCircle.txt&quot;);
+
+<span class="nc" id="L84">				} catch (illegalTextGrammarException | unDefinedPersonException | sameLabelException</span>
+<span class="nc" id="L85">						| illegalParameterException e) {</span>
+<span class="nc" id="L86">					LOGGER.error(e.getMessage());</span>
+<span class="nc" id="L87">					System.out.println(&quot;请重新读取文件&quot;);</span>
+<span class="nc" id="L88">					break;</span>
+<span class="nc" id="L89">				} catch (NumberFormatException e) {</span>
+<span class="nc" id="L90">					e.printStackTrace();</span>
+				}
+<span class="nc" id="L92">				socialCircularOrbit = (SocialNetCircularOrbit) socialCircularOrbitBuilder.getConcreteCircularOrbit();</span>
+<span class="nc" id="L93">				centralUser = socialCircularOrbit.getCentralObject();</span>
+<span class="nc" id="L94">				LOGGER.debug(&quot;读取成功&quot;);</span>
+<span class="nc" id="L95">				break;</span>
+			case &quot;2&quot;:// 可视化
+<span class="nc" id="L97">				CircularOrbitAPIs.visualize(socialCircularOrbit);</span>
+<span class="nc" id="L98">				LOGGER.debug(&quot;可视化完成&quot;);</span>
+<span class="nc" id="L99">				break;</span>
+			case &quot;3&quot;:// 查询好友位置
+<span class="nc" id="L101">				System.out.println(&quot;输入需要查询的好友名字&quot;);</span>
+<span class="nc" id="L102">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L103">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L104">				String nameString = arguments[0];</span>
+				try {
+<span class="nc" id="L106">					Track track = socialCircularOrbit.getObjectTrack(nameString);</span>
+<span class="nc" id="L107">					System.out.println(&quot;目标位于&quot; + track.getName());</span>
+<span class="nc" id="L108">					LOGGER.debug(&quot;查询完成&quot;);</span>
+<span class="nc" id="L109">					break;</span>
+<span class="nc" id="L110">				} catch (objectNoFoundException e) {</span>
+<span class="nc" id="L111">					System.out.println(&quot;查询失败&quot;);</span>
+<span class="nc" id="L112">					LOGGER.error(e.getMessage());</span>
+<span class="nc" id="L113">					break;</span>
+				}
+			case &quot;4&quot;:// 打印轨道结构
+<span class="nc" id="L116">				System.out.println(socialCircularOrbit.toString());</span>
+<span class="nc" id="L117">				LOGGER.debug(&quot;打印轨道结构&quot;);</span>
+<span class="nc" id="L118">				break;</span>
+			case &quot;5&quot;:// 增加新的朋友
+<span class="nc" id="L120">				System.out.println(&quot;增加新的朋友&quot;);</span>
+<span class="nc" id="L121">				System.out.println(&quot;输入名字 岁数 性别&quot;);</span>
+<span class="nc" id="L122">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L123">				arguments = inputString.split(&quot;\\s&quot;);</span>
+				try {
+<span class="nc" id="L125">					person1 = Person.getInstance(arguments[0], Integer.valueOf(arguments[1]), arguments[2]);</span>
+<span class="nc" id="L126">				} catch (sameLabelException | NumberFormatException | illegalParameterException e) {</span>
+<span class="nc" id="L127">					System.out.println(&quot;增加失败&quot;);</span>
+<span class="nc" id="L128">					LOGGER.error(e.getMessage());</span>
+<span class="nc" id="L129">					break;</span>
+				}
+<span class="nc" id="L131">				LOGGER.debug(&quot;增加成功\&quot;&quot;);</span>
+<span class="nc" id="L132">				personList.add(person1);</span>
+<span class="nc" id="L133">				break;</span>
+			case &quot;6&quot;:// 增加新的关系并重新整理
+<span class="nc" id="L135">				System.out.println(&quot;增加新的关系&quot;);</span>
+<span class="nc" id="L136">				System.out.println(&quot;输入名字1 名字2 权重&quot;);</span>
+<span class="nc" id="L137">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L138">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L139">				name1 = arguments[0];</span>
+<span class="nc" id="L140">				name2 = arguments[1];</span>
+<span class="nc" id="L141">				Double weight = Double.valueOf(arguments[2]);</span>
+<span class="nc" id="L142">				Iterator&lt;Person&gt; iterator1 = personList.iterator();</span>
+<span class="nc" id="L143">				person1 = null;</span>
+<span class="nc" id="L144">				person2 = null;</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">				while (iterator1.hasNext()) {</span>
+<span class="nc" id="L146">					Person person = iterator1.next();</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">					if (person.getName().equals(name1)) {</span>
+<span class="nc" id="L148">						person1 = person;</span>
+					}
+<span class="nc bnc" id="L150" title="All 2 branches missed.">					if (person.getName().equals(name2)) {</span>
+<span class="nc" id="L151">						person2 = person;</span>
+					}
+				}
+<span class="nc bnc" id="L154" title="All 4 branches missed.">				if (person1 == null || person2 == null) {</span>
+<span class="nc" id="L155">					LOGGER.error(&quot;不存在这个人&quot;);</span>
+<span class="nc" id="L156">					break;</span>
+				}
+<span class="nc bnc" id="L158" title="All 2 branches missed.">				if (person1.getName().equals(centralUser.getName())) {</span>
+<span class="nc" id="L159">					socialCircularOrbit.addcentralRelation(person2, weight);</span>
+<span class="nc" id="L160">					LOGGER.debug(&quot;新增关系成功&quot;);</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">				} else if (person2.getName().equals(centralUser.getName())) {</span>
+<span class="nc" id="L162">					socialCircularOrbit.addcentralRelation(person1, weight);</span>
+<span class="nc" id="L163">					LOGGER.debug(&quot;新增关系成功&quot;);</span>
+<span class="nc" id="L164">				} else {</span>
+<span class="nc" id="L165">					socialCircularOrbit.addtrackRelation(person1, person2, weight);</span>
+<span class="nc" id="L166">					socialCircularOrbit.addtrackRelation(person2, person1, weight);</span>
+<span class="nc" id="L167">					LOGGER.debug(&quot;新增关系成功&quot;);</span>
+				}
+<span class="nc" id="L169">				socialCircularOrbit.reArrange();</span>
+<span class="nc" id="L170">				LOGGER.debug(&quot;重整关系图成功&quot;);</span>
+<span class="nc" id="L171">				break;</span>
+			case &quot;7&quot;:// 删除一个关系并重新整理
+<span class="nc" id="L173">				System.out.println(&quot;删除一个关系&quot;);</span>
+<span class="nc" id="L174">				System.out.println(&quot;输入名字1 名字2&quot;);</span>
+<span class="nc" id="L175">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L176">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L177">				name1 = arguments[0];</span>
+<span class="nc" id="L178">				name2 = arguments[1];</span>
+<span class="nc" id="L179">				Iterator&lt;Person&gt; iterator2 = personList.iterator();</span>
+<span class="nc" id="L180">				person1 = null;</span>
+<span class="nc" id="L181">				person2 = null;</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">				while (iterator2.hasNext()) {</span>
+<span class="nc" id="L183">					Person personxy = iterator2.next();</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">					if (personxy.getName().equals(name1)) {</span>
+<span class="nc" id="L185">						person1 = personxy;</span>
+					}
+<span class="nc bnc" id="L187" title="All 2 branches missed.">					if (personxy.getName().equals(name2)) {</span>
+<span class="nc" id="L188">						person2 = personxy;</span>
+					}
+				}
+<span class="nc bnc" id="L191" title="All 4 branches missed.">				if (person1 == null || person2 == null) {</span>
+<span class="nc" id="L192">					LOGGER.error(&quot;不存在这个人&quot;);</span>
+<span class="nc" id="L193">					break;</span>
+				}
+<span class="nc bnc" id="L195" title="All 2 branches missed.">				if (person1.getName().equals(centralUser.getName())) {</span>
+<span class="nc" id="L196">					socialCircularOrbit.addcentralRelation(person2, 0);</span>
+<span class="nc" id="L197">					LOGGER.debug(&quot;删除关系成功&quot;);</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">				} else if (person2.getName().equals(centralUser.getName())) {</span>
+<span class="nc" id="L199">					socialCircularOrbit.addcentralRelation(person1, 0);</span>
+<span class="nc" id="L200">					LOGGER.debug(&quot;删除关系成功&quot;);</span>
+<span class="nc" id="L201">				} else {</span>
+<span class="nc" id="L202">					socialCircularOrbit.addtrackRelation(person1, person2, 0);</span>
+<span class="nc" id="L203">					socialCircularOrbit.addtrackRelation(person2, person1, 0);</span>
+<span class="nc" id="L204">					LOGGER.debug(&quot;删除关系成功&quot;);</span>
+				}
+<span class="nc" id="L206">				LOGGER.debug(&quot;重整关系图成功&quot;);</span>
+<span class="nc" id="L207">				socialCircularOrbit.reArrange();</span>
+<span class="nc" id="L208">				break;</span>
+			case &quot;8&quot;:// 计算熵值
+<span class="nc" id="L210">				System.out.println(&quot;信息熵为：&quot; + socialCircularOrbit.getObjectDistributionEntropy() + &quot;\n&quot;);</span>
+<span class="nc" id="L211">				LOGGER.debug(&quot;计算信息熵完成&quot;);</span>
+<span class="nc" id="L212">				break;</span>
+			case &quot;9&quot;:// 计算信息扩散度
+<span class="nc" id="L214">				System.out.println(&quot;计算信息扩散度:输入名字&quot;);</span>
+<span class="nc" id="L215">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L216">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L217">				name1 = arguments[0];</span>
+<span class="nc" id="L218">				Iterator&lt;Person&gt; iterator9 = personList.iterator();</span>
+<span class="nc" id="L219">				person1 = null;</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">				while (iterator9.hasNext()) {</span>
+<span class="nc" id="L221">					Person personTmp = iterator9.next();</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">					if (personTmp.getName().equals(name1)) {</span>
+<span class="nc" id="L223">						person1 = personTmp;</span>
+					}
+				}
+<span class="nc bnc" id="L226" title="All 2 branches missed.">				if (person1 == null) {</span>
+<span class="nc" id="L227">					System.out.println(&quot;不存在这个人&quot;);</span>
+<span class="nc" id="L228">					break;</span>
+				}
+<span class="nc" id="L230">				System.out.println(&quot;信息扩散度为：&quot; + socialCircularOrbit.getIntimacy(person1) + &quot;\n&quot;);</span>
+<span class="nc" id="L231">				LOGGER.debug(&quot;计算信息扩散度完成&quot;);</span>
+<span class="nc" id="L232">				break;</span>
+			case &quot;10&quot;:// 计算逻辑距离
+<span class="nc" id="L234">				System.out.println(&quot;计算逻辑距离&quot;);</span>
+<span class="nc" id="L235">				System.out.println(&quot;输入名字1 名字2&quot;);</span>
+<span class="nc" id="L236">				inputString = reader.readLine().trim();</span>
+<span class="nc" id="L237">				arguments = inputString.split(&quot;\\s&quot;);</span>
+<span class="nc" id="L238">				name1 = arguments[0];</span>
+<span class="nc" id="L239">				name2 = arguments[1];</span>
+<span class="nc" id="L240">				Iterator&lt;Person&gt; iterator10 = personList.iterator();</span>
+<span class="nc" id="L241">				person1 = null;</span>
+<span class="nc" id="L242">				person2 = null;</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">				while (iterator10.hasNext()) {</span>
+<span class="nc" id="L244">					Person personxy = iterator10.next();</span>
+<span class="nc bnc" id="L245" title="All 2 branches missed.">					if (personxy.getName().equals(name1)) {</span>
+<span class="nc" id="L246">						person1 = personxy;</span>
+					}
+<span class="nc bnc" id="L248" title="All 2 branches missed.">					if (personxy.getName().equals(name2)) {</span>
+<span class="nc" id="L249">						person2 = personxy;</span>
+					}
+				}
+<span class="nc bnc" id="L252" title="All 4 branches missed.">				if (person1 == null || person2 == null) {</span>
+<span class="nc" id="L253">					System.out.println(&quot;不存在这个人&quot;);</span>
+<span class="nc" id="L254">					break;</span>
+				}
+<span class="nc" id="L256">				System.out.println(&quot;距离：&quot; + socialCircularOrbit.getLogicalDistance(person1, person2));</span>
+<span class="nc" id="L257">				LOGGER.debug(&quot;计算逻辑距离完成&quot;);</span>
+<span class="nc" id="L258">				break;</span>
+			case &quot;11&quot;:// 查询日志
+<span class="nc" id="L260">				LOGKEEPER = new logKeeper();</span>
+<span class="nc" id="L261">				System.out.println(&quot;选择筛选条件：\n&quot;);</span>
+<span class="nc" id="L262">				System.out.println(&quot;1.\t时间段&quot;);</span>
+<span class="nc" id="L263">				System.out.println(&quot;2.\t按类型&quot;);</span>
+<span class="nc" id="L264">				System.out.println(&quot;3.\t按类&quot;);</span>
+<span class="nc" id="L265">				System.out.println(&quot;4.\t按方法&quot;);</span>
+<span class="nc" id="L266">				input = reader.readLine().trim();</span>
+<span class="nc bnc" id="L267" title="All 5 branches missed.">				switch (input) {</span>
+				case &quot;1&quot;:// 时间段
+<span class="nc" id="L269">					System.out.println(&quot;请输入开始时间，格式参考：2019-05-19 02:05:14&quot;);</span>
+<span class="nc" id="L270">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L271">					final Instant time1 = Instant.parse(inputString.replace(' ','T')+&quot;Z&quot;);</span>
+<span class="nc" id="L272">					System.out.println(&quot;请输入结束时间，格式参考：2019-05-19 02:05:14&quot;);</span>
+<span class="nc" id="L273">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L274">					final Instant time2 = Instant.parse(inputString.replace(' ','T')+&quot;Z&quot;);</span>
+<span class="nc bnc" id="L275" title="All 4 branches missed.">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getTime().isAfter(time1)&amp;&amp;p.getTime().isBefore(time2)));</span>
+<span class="nc" id="L276">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L277">					break;</span>
+				case &quot;2&quot;:// 按类型
+<span class="nc" id="L279">					System.out.println(&quot;请输入类型：ERROR或DEBUG&quot;);</span>
+<span class="nc" id="L280">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L281">					final String input1 = new String(inputString);</span>
+<span class="nc" id="L282">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getLogType().equals(input1)));</span>
+<span class="nc" id="L283">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L284">					break;</span>
+				case &quot;3&quot;:// 按类
+<span class="nc" id="L286">					System.out.println(&quot;请输入类名&quot;);</span>
+<span class="nc" id="L287">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L288">					final String input2 = new String(inputString);</span>
+<span class="nc" id="L289">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getClassName().equals(input2)));</span>
+<span class="nc" id="L290">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L291">					break;</span>
+				case &quot;4&quot;:// 按方法
+<span class="nc" id="L293">					System.out.println(&quot;请输入方法名&quot;);</span>
+<span class="nc" id="L294">					inputString = reader.readLine().trim();</span>
+<span class="nc" id="L295">					final String input3 = new String(inputString);</span>
+<span class="nc" id="L296">					System.out.println(LOGKEEPER.getFilterLogs(p -&gt; p.getMethodName().equals(input3)));</span>
+<span class="nc" id="L297">					System.out.println(&quot;查询完毕&quot;);</span>
+<span class="nc" id="L298">					break;</span>
+				default:
+<span class="nc" id="L300">					LOGGER.debug(&quot;输入错误&quot;);</span>
+					break;
+				}
+
+<span class="nc" id="L304">				break;</span>
+			case &quot;end&quot;:// 结束游戏
+<span class="nc" id="L306">				exitflag = true;</span>
+<span class="nc" id="L307">				LOGGER.debug(&quot;游戏结束&quot;);</span>
+<span class="nc" id="L308">				break;</span>
+			default:
+<span class="nc" id="L310">				System.out.println(&quot;输入错误&quot;);</span>
+<span class="nc" id="L311">				LOGGER.debug(&quot;输入错误&quot;);</span>
+				break;
+			}
+<span class="nc bnc" id="L314" title="All 2 branches missed.">			if (exitflag)</span>
+				break;
+		}
+<span class="nc" id="L317">	}</span>
+
+	public static void main(String[] args) throws IOException {
+<span class="nc" id="L320">		new SocialNetworkGame().gameMain();</span>
+<span class="nc" id="L321">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

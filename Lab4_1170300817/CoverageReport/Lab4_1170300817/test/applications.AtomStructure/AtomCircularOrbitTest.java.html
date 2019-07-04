@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>AtomCircularOrbitTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">applications.AtomStructure</a> &gt; <span class="el_source">AtomCircularOrbitTest.java</span></div><h1>AtomCircularOrbitTest.java</h1><pre class="source lang-java linenums">package applications.AtomStructure;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+import track.Track;
+
+<span class="fc" id="L9">public class AtomCircularOrbitTest {</span>
+	// Testing strategy:
+	// 补测一些子类方法
+<span class="fc" id="L12">	AtomCircularOrbit atomCircularOrbit = new AtomCircularOrbit();</span>
+<span class="fc" id="L13">	Track t1 = new Track(&quot;track1&quot;, 100);</span>
+<span class="fc" id="L14">	Track t2 = new Track(&quot;track2&quot;, 200);</span>
+<span class="fc" id="L15">	Track t3 = new Track(&quot;track3&quot;, 300);</span>
+<span class="fc" id="L16">	Particle e1 = Particle.getElectron();</span>
+<span class="fc" id="L17">	Particle e2 = Particle.getElectron();</span>
+<span class="fc" id="L18">	Particle e3 = Particle.getElectron();</span>
+
+	@Test
+	public void transitTest() {
+<span class="fc" id="L22">		atomCircularOrbit.addTrack(t1);</span>
+<span class="fc" id="L23">		atomCircularOrbit.addTrack(t2);</span>
+<span class="fc" id="L24">		atomCircularOrbit.addTrack(t3);</span>
+<span class="fc" id="L25">		atomCircularOrbit.addObjectToTrack(t1, e1);</span>
+<span class="fc" id="L26">		atomCircularOrbit.addObjectToTrack(t2, e2);</span>
+<span class="fc" id="L27">		atomCircularOrbit.addObjectToTrack(t3, e3);</span>
+<span class="fc" id="L28">		atomCircularOrbit.transit(t1, t2);</span>
+<span class="fc" id="L29">		assertFalse(atomCircularOrbit.transit(t1, t2));</span>
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">		assertTrue(atomCircularOrbit.getObjectNumonTrack(t2) == 2);</span>
+<span class="fc" id="L31">	}</span>
+
+	@Test
+	public void transitReturnTest() {
+<span class="fc" id="L35">		TransitCareTaker transitCareTaker = new TransitCareTaker();</span>
+<span class="fc" id="L36">		atomCircularOrbit.addTrack(t1);</span>
+<span class="fc" id="L37">		atomCircularOrbit.addTrack(t2);</span>
+<span class="fc" id="L38">		atomCircularOrbit.addTrack(t3);</span>
+<span class="fc" id="L39">		atomCircularOrbit.addObjectToTrack(t1, e1);</span>
+<span class="fc" id="L40">		atomCircularOrbit.addObjectToTrack(t2, e2);</span>
+<span class="fc" id="L41">		atomCircularOrbit.addObjectToTrack(t3, e3);</span>
+<span class="fc" id="L42">		atomCircularOrbit.transit(t1, t2);</span>
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">		assertTrue(atomCircularOrbit.getObjectNumonTrack(t2) == 2);</span>
+<span class="fc" id="L44">		transitCareTaker.addMemento(new Memento(t1, t2));</span>
+<span class="fc" id="L45">		Memento m = transitCareTaker.getMemento();</span>
+<span class="fc" id="L46">		Track fromTrack = m.getToTrack();</span>
+<span class="fc" id="L47">		Track toTrack = m.getFromTrack();</span>
+<span class="fc" id="L48">		atomCircularOrbit.transit(fromTrack, toTrack);</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">		assertTrue(atomCircularOrbit.getObjectNumonTrack(t2) == 1);</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">		assertTrue(transitCareTaker.getMemento()==null);</span>
+<span class="fc" id="L51">	}</span>
+
+	@Test
+	public void removeElectronTest() {
+<span class="fc" id="L55">		atomCircularOrbit.addTrack(t1);</span>
+<span class="fc" id="L56">		atomCircularOrbit.addTrack(t2);</span>
+<span class="fc" id="L57">		atomCircularOrbit.addTrack(t3);</span>
+<span class="fc" id="L58">		atomCircularOrbit.addObjectToTrack(t1, e1);</span>
+<span class="fc" id="L59">		atomCircularOrbit.addObjectToTrack(t2, e2);</span>
+<span class="fc" id="L60">		atomCircularOrbit.addObjectToTrack(t3, e3);</span>
+<span class="fc" id="L61">		atomCircularOrbit.removeElectron(t1);</span>
+<span class="fc" id="L62">		atomCircularOrbit.removeElectron(t2);</span>
+<span class="fc" id="L63">		assertFalse(atomCircularOrbit.removeElectron(t2));</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">		assertTrue(atomCircularOrbit.getObjectNumonTrack(t1) == 0);</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">		assertTrue(atomCircularOrbit.getObjectNumonTrack(t2) == 0);</span>
+<span class="fc" id="L66">	}</span>
+
+	@Test
+	public void toStringTest() {
+<span class="fc" id="L70">		atomCircularOrbit.addTrack(t1);</span>
+<span class="fc" id="L71">		atomCircularOrbit.addTrack(t2);</span>
+<span class="fc" id="L72">		atomCircularOrbit.addTrack(t3);</span>
+<span class="fc" id="L73">		atomCircularOrbit.addObjectToTrack(t1, e1);</span>
+<span class="fc" id="L74">		atomCircularOrbit.addObjectToTrack(t2, e2);</span>
+<span class="fc" id="L75">		atomCircularOrbit.addObjectToTrack(t3, e3);</span>
+<span class="fc" id="L76">		System.out.println(atomCircularOrbit.toString());</span>
+<span class="fc" id="L77">		assertTrue(atomCircularOrbit.toString().contains(&quot;track1上有：1个电子&quot;));</span>
+<span class="fc" id="L78">		assertTrue(atomCircularOrbit.toString().contains(&quot;track2上有：1个电子&quot;));</span>
+<span class="fc" id="L79">		assertTrue(atomCircularOrbit.toString().contains(&quot;track3上有：1个电子&quot;));</span>
+
+<span class="fc" id="L81">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

@@ -1,0 +1,3 @@
+Athlete ::= <Bolt,1,JaAM,38,9.94>
+Game ::= 100
+NumOfTracks ::= 5 

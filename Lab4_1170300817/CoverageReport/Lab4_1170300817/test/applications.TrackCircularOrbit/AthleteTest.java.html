@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>AthleteTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">applications.TrackCircularOrbit</a> &gt; <span class="el_source">AthleteTest.java</span></div><h1>AthleteTest.java</h1><pre class="source lang-java linenums">package applications.TrackCircularOrbit;
+
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import applications.TrackGame.Athlete;
+import exception.illegalParameterException;
+import exception.sameLabelException;
+
+<span class="fc" id="L11">public class AthleteTest {</span>
+
+	@Test
+	public void athleteEX1Test() {
+		try {
+<span class="nc" id="L16">			Athlete.getInstance(&quot;,.a&quot;, 16, &quot;AAM&quot;, 12, 9.65);</span>
+<span class="pc" id="L17">		} catch (illegalParameterException | sameLabelException e) {</span>
+<span class="fc" id="L18">			assertTrue(e.getMessage().contains(&quot;运动员名字错误&quot;));</span>
+		}
+<span class="fc" id="L20">	}</span>
+
+	@Test
+	public void athleteEX2Test() {
+		try {
+<span class="nc" id="L25">			Athlete.getInstance(&quot;asd&quot;, 16, &quot;AM&quot;, 12, 9.65);</span>
+<span class="pc" id="L26">		} catch (illegalParameterException | sameLabelException e) {</span>
+<span class="fc" id="L27">			assertTrue(e.getMessage().contains(&quot;运动员国籍错误&quot;));</span>
+		}
+<span class="fc" id="L29">	}</span>
+
+	@Test 
+	public void athleteEX3Test() {
+		try {
+<span class="nc" id="L34">			Athlete.getInstance(&quot;asf&quot;, 16, &quot;AAM&quot;, 12, 9.065);</span>
+<span class="pc" id="L35">		} catch (illegalParameterException | sameLabelException e) {</span>
+<span class="fc" id="L36">			assertTrue(e.getMessage().contains(&quot;运动员最好成绩错误&quot;));</span>
+		}
+<span class="fc" id="L38">	}</span>
+
+	@Test
+	public void compareTest() throws sameLabelException, illegalParameterException {
+
+<span class="fc" id="L43">		Athlete athlete1=Athlete.getInstance(&quot;ccc&quot;, 16, &quot;AAM&quot;, 12, 9.65);</span>
+<span class="fc" id="L44">		Athlete athlete2=Athlete.getInstance(&quot;eee&quot;, 16, &quot;AAM&quot;, 12, 9.69);</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">		assertTrue(athlete1.compareTo(athlete2)==-1);</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">		assertTrue(athlete2.compareTo(athlete1)==1);</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">		assertTrue(athlete2.compareTo(athlete2)==0);</span>
+
+<span class="fc" id="L49">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>

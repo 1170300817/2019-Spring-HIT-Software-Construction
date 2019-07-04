@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SocialNetworkTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">test (2) (2019年5月19日 下午11:42:00)</a> &gt; <a href="../../index.html" class="el_group">Lab4_1170300817</a> &gt; <a href="../index.html" class="el_bundle">test</a> &gt; <a href="index.source.html" class="el_package">applications.SocialNetworkCircle</a> &gt; <span class="el_source">SocialNetworkTest.java</span></div><h1>SocialNetworkTest.java</h1><pre class="source lang-java linenums">package applications.SocialNetworkCircle;
+
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import org.junit.Test;
+
+import exception.illegalParameterException;
+import exception.illegalTextGrammarException;
+import exception.sameLabelException;
+import exception.unDefinedPersonException;
+
+<span class="fc" id="L13">public class SocialNetworkTest {</span>
+
+	@Test
+	public void SocialNetworkTestrelation() throws NumberFormatException, illegalTextGrammarException,
+			sameLabelException, IOException, unDefinedPersonException, illegalParameterException {
+//		List&lt;Person&gt; personList = new ArrayList&lt;Person&gt;();
+<span class="fc" id="L19">		SocialNetCircularOrbitBuilder socialCircularOrbitBuilder = new SocialNetCircularOrbitBuilder();</span>
+<span class="fc" id="L20">		socialCircularOrbitBuilder.createFromFile(&quot;src/txt/SocialNetworkCircle.txt&quot;);</span>
+<span class="fc" id="L21">		SocialNetCircularOrbit socialCircularOrbit = (SocialNetCircularOrbit) socialCircularOrbitBuilder</span>
+<span class="fc" id="L22">				.getConcreteCircularOrbit();</span>
+//		Person centralUser = socialCircularOrbit.getCentralObject();
+<span class="fc" id="L24">		socialCircularOrbit.reArrange();</span>
+<span class="fc" id="L25">		assertTrue(socialCircularOrbit.toString().contains(&quot;TommyWong的关系网:&quot;));</span>
+<span class="fc" id="L26">		System.out.println(socialCircularOrbit.toString());</span>
+<span class="fc" id="L27">		assertTrue(socialCircularOrbit.toString().contains(&quot;track0上有:&quot;));</span>
+<span class="fc" id="L28">		assertTrue(socialCircularOrbit.toString().contains(&quot;LisaWong&quot;));</span>
+<span class="fc" id="L29">		assertTrue(socialCircularOrbit.toString().contains(&quot;DavidChen&quot;));</span>
+<span class="fc" id="L30">		assertTrue(socialCircularOrbit.toString().contains(&quot;track1上有:FrankLee&quot;));</span>
+
+<span class="fc" id="L32">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span>test (2) (2019年5月19日 下午11:42:00)</div></body></html>
